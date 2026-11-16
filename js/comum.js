@@ -26,8 +26,9 @@ window.CC = (function () {
       // Preço cheio, mostrado riscado ("de/por"). Deixe vazio para não mostrar.
       precoDe: 'R$ 50',
       rotuloOferta: 'Oferta de lançamento',
-      // Link de pagamento na Hotmart (produto 8985563, vendas ativas desde 15/11/2026)
-      checkout: 'https://pay.hotmart.com/E108516263H'
+      // Hotmart, produto 8985563. Preço base R$ 50 (link sem "off"); oferta de lançamento R$ 37 = código reovmg2f.
+      // Quando o lançamento acabar: troque o link para https://pay.hotmart.com/E108516263H, preco para 'R$ 50' e precoDe para ''.
+      checkout: 'https://pay.hotmart.com/E108516263H?off=reovmg2f'
     },
 
     // LINKS DOS BANCOS. Para trocar o destino de um banco por um link de parceria ou afiliado,
