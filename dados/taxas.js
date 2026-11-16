@@ -1,5 +1,5 @@
 window.TAXAS_SNAPSHOT = {
- "geradoEm": "2026-11-16T22:44:38.023Z",
+ "geradoEm": "2026-11-16T22:52:55.447Z",
  "mes": "2026-10",
  "linhas": [
   {
@@ -140,16 +140,6 @@ window.TAXAS_SNAPSHOT = {
    "TaxaJurosAoMes": 1.13,
    "TaxaJurosAoAno": 14.42,
    "cnpj8": "00000000",
-   "anoMes": "2026-10"
-  },
-  {
-   "Mes": "Out-2026",
-   "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA",
-   "Posicao": 1,
-   "InstituicaoFinanceira": "BCO RODOBENS S.A.",
-   "TaxaJurosAoMes": 0,
-   "TaxaJurosAoAno": 0,
-   "cnpj8": "33603457",
    "anoMes": "2026-10"
   },
   {

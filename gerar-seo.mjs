@@ -4,7 +4,7 @@
 //  - metadados de compartilhamento e endereço canônico em todas as páginas
 //  - sitemap.xml e robots.txt
 // Uso: node gerar-seo.mjs   (rode depois de atualizar-taxas.mjs e gerar-blog.mjs)
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import vm from 'node:vm';
@@ -40,7 +40,8 @@ const parcela = (t) => CC.simular({ ...EX, indexAA: t.idx === 'tr' ? P.tr : t.id
 
 /* ---------- normaliza as taxas (mesma regra do navegador) ---------- */
 const NOMES = {};
-const taxas = snap.linhas.map((l) => {
+// mesma regra do navegador: ignora linha sem CNPJ válido ou com taxa zerada
+const taxas = snap.linhas.filter((l) => /^\d{8}$/.test(String(l.cnpj8)) && Number(l.TaxaJurosAoAno) > 0).map((l) => {
   NOMES[l.cnpj8] = l.InstituicaoFinanceira;
   return {
     id: l.cnpj8,
@@ -96,6 +97,8 @@ const genero = (id, html) => {
 
 /* ---------- uma página por banco ---------- */
 mkdirSync(join(raiz, 'bancos'), { recursive: true });
+// instituição que saiu da divulgação do mês perde a página: melhor do que manter números antigos com data nova
+for (const n of readdirSync(join(raiz, 'bancos'))) if (n.endsWith('.html') && !Object.values(pagina).includes('bancos/' + n)) { rmSync(join(raiz, 'bancos', n)); console.log('Removida página sem dados no mês: bancos/' + n); }
 for (const id of ids) {
   const nome = nomeDe(id), b = BANCOS[id] || {}, minhas = taxas.filter((t) => t.id === id);
   const principal = minhas.find((t) => t.linha === 'reg' && t.idx === 'tr') || minhas.find((t) => t.idx === 'tr') || minhas[0];

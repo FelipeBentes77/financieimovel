@@ -1,36 +1,49 @@
-# Rotina diária do site:
-# 1) busca no Banco Central a divulgação mais recente de taxas e regrava dados/taxas.js se houver novidade;
-# 2) regrava as páginas com o mês vigente (títulos, descrições e sitemap) quando o mês vira.
-# Só publica quando alguma coisa mudou.
+# Rotina automática do site, duas vezes por dia:
+# 1) busca no Banco Central a divulgação mais recente de taxas, valida os dados e regrava dados/taxas.js se houver novidade;
+# 2) regrava as páginas com o mês vigente (títulos, descrições e sitemap) quando o mês vira;
+# 3) confere o site gerado e só então publica, e apenas se alguma coisa mudou.
+# Se a validação falhar, nada é publicado e o GitHub avisa o dono do repositório por e-mail.
 name: Atualizar taxas
 
 on:
   schedule:
-    - cron: '0 9 * * *'   # 06h de Brasília
+    - cron: '0 9 * * *'    # 06h de Brasília
+    - cron: '0 18 * * *'   # 15h de Brasília
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: atualizar-taxas
+  cancel-in-progress: false
+
 jobs:
   atualizar:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node atualizar-taxas.mjs
-      - run: node gerar-blog.mjs
-      - run: node gerar-seo.mjs
+      - name: Buscar e validar as taxas do Banco Central
+        run: node atualizar-taxas.mjs
+      - name: Gerar as páginas
+        run: |
+          node gerar-blog.mjs
+          node gerar-seo.mjs
+      - name: Conferir o site gerado
+        run: node validar-site.mjs
       - name: Publicar se houve mudança
         run: |
           if [ -z "$(git status --porcelain)" ]; then
-            echo "Nada mudou: mesmas taxas e mesmo mês."
+            echo "Nada mudou: mesmas taxas e mesmo mês." >> "$GITHUB_STEP_SUMMARY"
           else
             git config user.name "atualizador-de-taxas"
             git config user.email "actions@users.noreply.github.com"
             git add -A
             git commit -m "Atualização automática: taxas do Banco Central e mês vigente"
             git push
+            echo "Site atualizado e publicado." >> "$GITHUB_STEP_SUMMARY"
           fi
