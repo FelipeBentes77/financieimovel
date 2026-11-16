@@ -22,7 +22,9 @@ window.CC = (function () {
     produto: {
       nome: 'Do Sonho às Chaves',
       subtitulo: 'O guia completo para financiar, comprar e reformar seu imóvel',
-      preco: '',
+      preco: 'R$ 37',
+      // Link de pagamento na Hotmart (produto 8985563): https://pay.hotmart.com/E108516263H
+      // Só colocar aqui depois que a Hotmart aprovar o produto; vazio = botão "Lançamento em breve".
       checkout: ''
     },
 
@@ -193,9 +195,17 @@ window.CC = (function () {
     var cfg = CONFIG.anuncios, espacos = document.querySelectorAll('.anuncio');
     if (!espacos.length) return;
     if (!cfg.cliente) {
+      // enquanto o AdSense não está configurado, o espaço divulga o ebook
       [].forEach.call(espacos, function (el) {
-        if (cfg.demonstrar) el.innerHTML = '<span>Espaço publicitário · ' + f.esc(el.getAttribute('data-bloco') || '') + '</span>';
-        else el.hidden = true;
+        var prox = el.nextElementSibling;
+        if (document.body.getAttribute('data-pagina') === 'ebook' || (prox && prox.hasAttribute('data-promo'))) { el.hidden = true; return; }
+        el.classList.add('casa');
+        var p = CONFIG.produto, lateral = el.getAttribute('data-formato') === 'retangulo';
+        el.innerHTML = '<a class="anuncio-ebook' + (lateral ? ' lateral' : '') + '" href="' + R + 'ebook.html">' +
+          '<span class="mini-capa" aria-hidden="true"><b>Do Sonho</b><em>às Chaves</em></span>' +
+          '<span class="txt"><small>Ebook Financie Imóvel</small><strong>O passo a passo para financiar, comprar e reformar pagando menos</strong>' +
+          '<span class="det">23 capítulos e 3 planilhas' + (p.preco ? ' · ' + f.esc(p.preco) : '') + '</span></span>' +
+          '<span class="btn btn-acao">' + (p.checkout ? 'Quero o ebook' : 'Conhecer') + SETA + '</span></a>';
       });
       return;
     }

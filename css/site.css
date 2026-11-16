@@ -410,3 +410,32 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
   .celulas > div:first-child { grid-column: 1 / -1; border-top: 0; border-radius: var(--raio) var(--raio) 0 0; }
   .faixa .botoes .btn { flex: 1 1 100%; }
 }
+
+/* chamada do ebook nos espaços de anúncio (enquanto não há AdSense) */
+.anuncio.casa { display: block; min-height: 0; border: 0; background: none; text-transform: none; letter-spacing: 0; font-size: 1rem; font-weight: 400; text-align: left; }
+.anuncio-ebook { display: flex; align-items: center; gap: 18px; text-decoration: none; background: var(--lavanda); border: 1px solid var(--linha); border-left: 5px solid var(--coral); border-radius: 10px; padding: 14px 18px; color: var(--tinta); transition: box-shadow .15s, border-color .15s; }
+.anuncio-ebook:hover { box-shadow: 0 8px 24px rgba(16, 26, 74, .12); border-color: var(--marinho); border-left-color: var(--coral); }
+.mini-capa { flex: none; width: 62px; height: 84px; border-radius: 3px 7px 7px 3px; padding: 12px 6px 0 9px; color: #fff; font-size: .62rem; line-height: 1.05; font-weight: 800; letter-spacing: -.02em; background: linear-gradient(160deg, #2b3cab, #101a4a 60%); box-shadow: inset 5px 0 6px -4px rgba(0, 0, 0, .6), 4px 5px 12px rgba(16, 26, 74, .3); }
+.mini-capa b, .mini-capa em { display: block; font-style: normal; }
+.mini-capa em { color: var(--amarelo); }
+.anuncio-ebook .txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.anuncio-ebook small { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--coral-escuro); }
+.anuncio-ebook strong { font-size: 1.08rem; line-height: 1.25; }
+.anuncio-ebook .det { font-size: .88rem; color: var(--tinta-2); }
+.anuncio-ebook .btn { flex: none; }
+.anuncio-ebook.lateral { flex-direction: column; align-items: stretch; text-align: left; border-left-width: 1px; border-top: 5px solid var(--coral); }
+.anuncio-ebook.lateral .mini-capa { width: 78px; height: 104px; font-size: .76rem; padding-top: 16px; }
+.anuncio-ebook.lateral .btn { width: 100%; }
+@media (max-width: 640px) { .anuncio-ebook { flex-wrap: wrap; } .anuncio-ebook .btn { width: 100%; } }
+
+/* página de vendas do ebook */
+.recebe { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.recebe div { background: #fff; border: 1px solid var(--linha); border-radius: 10px; padding: 20px; }
+.recebe b { display: block; font-size: 1.9rem; font-weight: 800; color: var(--coral-escuro); letter-spacing: -.03em; line-height: 1.1; }
+.recebe span { color: var(--tinta-2); font-size: .95rem; }
+.oferta-ebook { max-width: 560px; margin: 0 auto; background: #fff; border: 2px solid var(--marinho); border-radius: 14px; padding: 30px; text-align: center; }
+.oferta-ebook .valor { font-size: 3.2rem; font-weight: 800; letter-spacing: -.04em; color: var(--marinho); line-height: 1; margin: 6px 0 4px; }
+.oferta-ebook ul { list-style: none; padding: 0; margin: 18px 0 22px; text-align: left; display: grid; gap: 9px; }
+.oferta-ebook li { display: flex; gap: 10px; }
+.oferta-ebook li::before { content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; margin-top: 2px; background: var(--verde) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.3l3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/20px; }
+@media (max-width: 1000px) { .recebe { grid-template-columns: 1fr 1fr; } }
