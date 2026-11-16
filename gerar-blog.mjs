@@ -60,9 +60,6 @@ ${faq.map(([q, a]) => `      <details><summary>${esc(q)}</summary><p>${esc(a)}</
 <meta property="og:title" content="${esc(p.titulo)}">
 <meta property="og:description" content="${esc(p.descricao || p.resumo)}">
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/site.css">
 </head>
 <body>

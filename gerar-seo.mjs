@@ -67,9 +67,6 @@ const cabeca = (r, titulo, descricao) => `<!doctype html>
 <title>${esc(titulo)}</title>
 <meta name="description" content="${esc(descricao)}">
 <link rel="icon" href="${r}assets/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${r}css/site.css">
 </head>
 <body data-pagina="bancos">
@@ -219,8 +216,8 @@ const GOOGLE_ADS = 'https://pagead2.googlesyndication.com https://*.googlesyndic
 const CSP = [
   "default-src 'self'",
   `script-src 'self'${comAnalytics ? ' ' + GA_SCRIPT : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
   `img-src 'self' data:${comAnuncios ? ' https:' : comAnalytics ? ' ' + GA_DADOS : ''}`,
   `connect-src 'self' https://olinda.bcb.gov.br${leadOrigem ? ' ' + leadOrigem : ''}${comAnalytics ? ' ' + GA_DADOS : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
   `frame-src ${comAnuncios ? GOOGLE_ADS : "'none'"}`,
@@ -284,11 +281,15 @@ for (const p of paginas) {
   }
 
   const imagem = postDe[p] ? `${dominio}/assets/blog/${postDe[p].slug}.jpg` : `${dominio}/assets/og.png`;
+  const rz = oculta ? '/' : p.includes('/') ? '../' : '';
+  const precarga = `<link rel="preload" href="${rz}assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>` +
+    (postDe[p] ? `\n<link rel="preload" href="${rz}assets/blog/${postDe[p].slug}.webp" as="image" type="image/webp" fetchpriority="high">` : '');
   const bloco = `<!--seo:inicio-->
 <meta http-equiv="Content-Security-Policy" content="${CSP}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="${oculta ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}">
 <meta name="theme-color" content="#101a4a">
+${precarga}
 ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="${url}">\n` : ''}<meta property="og:site_name" content="Financie Imóvel">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="${p.startsWith('blog/') ? 'article' : 'website'}">
