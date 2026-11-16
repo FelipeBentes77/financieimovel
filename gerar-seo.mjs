@@ -221,7 +221,8 @@ const CSP = [
 ].join('; ');
 /* ---------- metadados em todas as páginas + sitemap ---------- */
 const paginas = [
-  ...readdirSync(raiz).filter((n) => n.endsWith('.html')),
+  // arquivos google*.html são a prova de propriedade do Search Console: não mexer nem listar
+  ...readdirSync(raiz).filter((n) => n.endsWith('.html') && !/^google[0-9a-f]+\.html$/.test(n)),
   ...readdirSync(join(raiz, 'blog')).filter((n) => n.endsWith('.html')).map((n) => 'blog/' + n),
   ...readdirSync(join(raiz, 'bancos')).filter((n) => n.endsWith('.html')).map((n) => 'bancos/' + n)
 ];
