@@ -38,7 +38,7 @@
         '</b></td><td class="n"><b>' + f.brl(price.maior / 0.3) + '</b></td></tr>';
     }).join('');
     el.innerHTML = '<table><thead><tr><th>Imóvel</th><th class="n">Entrada (20%)</th><th class="n">1ª parcela SAC</th><th class="n">Renda mínima SAC</th><th class="n">Renda mínima Price</th></tr></thead><tbody>' + linhas +
-      '</tbody></table><p class="nota">Cálculo com a taxa mediana dos bancos de atuação nacional em ' + CC.dados.rotulo + ' (' + f.pct(aa, 2) +
+      '</tbody></table><p class="nota">Cálculo com a taxa mediana dos bancos de atuação nacional, atualizada em ' + CC.dados.atual + ' (' + f.pct(aa, 2) +
       ' ao ano + TR), 30 anos, parcela limitada a 30% da renda, com seguros estimados. Atualizado automaticamente a cada novo mês de dados.</p>';
   }
 

@@ -1,5 +1,7 @@
-# Atualiza dados/taxas.js com o mês mais recente publicado pelo Banco Central.
-# Roda todo dia; só grava quando há mês novo. Funciona quando o site estiver em um repositório do GitHub.
+# Rotina diária do site:
+# 1) busca no Banco Central a divulgação mais recente de taxas e regrava dados/taxas.js se houver novidade;
+# 2) regrava as páginas com o mês vigente (títulos, descrições e sitemap) quando o mês vira.
+# Só publica quando alguma coisa mudou.
 name: Atualizar taxas
 
 on:
@@ -24,11 +26,11 @@ jobs:
       - name: Publicar se houve mudança
         run: |
           if [ -z "$(git status --porcelain)" ]; then
-            echo "Sem mês novo."
+            echo "Nada mudou: mesmas taxas e mesmo mês."
           else
             git config user.name "atualizador-de-taxas"
             git config user.email "actions@users.noreply.github.com"
             git add -A
-            git commit -m "Taxas do Banco Central: atualização automática"
+            git commit -m "Atualização automática: taxas do Banco Central e mês vigente"
             git push
           fi

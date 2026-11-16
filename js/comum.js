@@ -18,6 +18,10 @@ window.CC = (function () {
       blocos: { home: '', comparador_topo: '', comparador: '', calculadora: '', bancos: '', bancos_lateral: '', guias: '', blog_topo: '', blog_meio: '', blog_lateral: '', blog_fim: '' }
     },
 
+    // MEDIÇÃO DE ACESSOS (Google Analytics 4). "id" é o ID de métricas do fluxo da Web (G-...).
+    // Só carrega depois que o visitante aceita no aviso de cookies. Vazio = sem medição e sem aviso.
+    analytics: { id: 'G-4Z3L1SNS9K' },
+
     // PRODUTO DIGITAL. "checkout" é o link de pagamento (Hotmart, Kiwify etc.). Vazio = pré-lançamento.
     produto: {
       nome: 'Do Sonho às Chaves',
@@ -74,7 +78,15 @@ window.CC = (function () {
   var LOGO = '<svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 2.5 37 16v18a3.5 3.5 0 0 1-3.5 3.5h-27A3.5 3.5 0 0 1 3 34V16z" fill="#ff5c39"/><circle cx="20" cy="20.5" r="5" fill="var(--logo-furo,#101a4a)"/><path d="M17.6 23h4.8l1.9 9.5h-8.6z" fill="var(--logo-furo,#101a4a)"/></svg>';
 
   /* ---------- dados ---------- */
-  var dados = { taxas: [], mes: '', rotulo: '' };
+  // "rotulo" = mês dos contratos na última divulgação do Banco Central (sai com cerca de 6 semanas de atraso).
+  // "atual"  = mês corrente, mostrado nos títulos: as taxas exibidas são sempre as mais recentes disponíveis.
+  var dados = { taxas: [], mes: '', rotulo: '', atual: '' };
+  function rotular() {
+    var hoje = new Date();
+    dados.atual = MESES[hoje.getMonth()] + ' de ' + hoje.getFullYear();
+    [].forEach.call(document.querySelectorAll('[data-mes]'), function (el) { el.textContent = dados.atual; });
+    if (dados.rotulo) [].forEach.call(document.querySelectorAll('[data-ref]'), function (el) { el.textContent = dados.rotulo; });
+  }
   function carregar(snap) {
     dados.mes = snap.mes;
     var p = snap.mes.split('-');
@@ -90,7 +102,7 @@ window.CC = (function () {
         aa: Number(l.TaxaJurosAoAno) || 0
       };
     });
-    [].forEach.call(document.querySelectorAll('[data-mes]'), function (el) { el.textContent = dados.rotulo; });
+    rotular();
   }
   // usa o snapshot local e tenta trocar pelo mês mais recente do Banco Central
   function iniciarDados(aoAtualizar) {
@@ -183,13 +195,65 @@ window.CC = (function () {
             '<p>Comparador independente de crédito imobiliário. Não somos instituição financeira e não concedemos crédito.</p></div>' +
           '<div><h4>Ferramentas</h4>' + a('comparar.html', 'Comparar bancos') + a('bancos.html', 'Taxas por banco') + a('quanto-posso-financiar.html', 'Quanto posso financiar') + a('comparar.html?s=price', 'Simular tabela Price') + a('comparar.html?s=sac', 'Simular tabela SAC') + '</div>' +
           '<div><h4>Aprenda</h4>' + a('blog.html', 'Blog') + a('guias.html', 'Guias rápidos') + a('ebook.html', 'Ebook: ' + CONFIG.produto.nome) + a('guias.html#metodologia', 'Metodologia') + '</div>' +
-          '<div><h4>Sobre</h4>' + a('index.html#como-funciona', 'Como funciona') + a('index.html#duvidas', 'Dúvidas frequentes') + '</div>' +
+          '<div><h4>Sobre</h4>' + a('index.html#como-funciona', 'Como funciona') + a('index.html#duvidas', 'Dúvidas frequentes') + a('privacidade.html', 'Privacidade e cookies') +
+            (idAnalytics() ? '<button class="rod-link" type="button" data-cookies>Preferências de cookies</button>' : '') + '</div>' +
         '</div>' +
-        '<p class="rod-legal">As simulações são estimativas, não constituem oferta de crédito nem garantia de aprovação. Taxas de juros: Banco Central do Brasil, dados abertos, referência <span data-mes></span>. Nomes e logotipos pertencem às respectivas instituições e são usados apenas para identificá-las, sem indicar parceria. Este site exibe publicidade e pode receber comissão de parceiros; isso não altera a ordem do ranking. Condições finais dependem da análise de cada banco.</p>' +
+        '<p class="rod-legal">As simulações são estimativas, não constituem oferta de crédito nem garantia de aprovação. Taxas de juros: Banco Central do Brasil, dados abertos. Exibimos sempre a divulgação mais recente (contratos de <span data-ref></span>), conferida todos os dias; atualização de <span data-mes></span>. Nomes e logotipos pertencem às respectivas instituições e são usados apenas para identificá-las, sem indicar parceria. Este site exibe publicidade e pode receber comissão de parceiros; isso não altera a ordem do ranking. Condições finais dependem da análise de cada banco.</p>' +
       '</div>';
-    if (dados.rotulo) [].forEach.call(document.querySelectorAll('[data-mes]'), function (el) { el.textContent = dados.rotulo; });
+    rotular();
     montarAnuncios();
     montarPromo();
+    montarConsentimento();
+  }
+
+  /* ---------- aviso de cookies e medição de acessos ---------- */
+  // A escolha fica só no navegador do visitante (localStorage "cc_cookies": 'sim' ou 'nao').
+  function idAnalytics() {
+    var id = String((CONFIG.analytics && CONFIG.analytics.id) || '');
+    return /^G-[A-Z0-9]{4,20}$/.test(id) ? id : '';
+  }
+  function lerEscolha() { try { var v = localStorage.getItem('cc_cookies'); return v === 'sim' || v === 'nao' ? v : ''; } catch (e) { return ''; } }
+  function gravarEscolha(v) { try { localStorage.setItem('cc_cookies', v); } catch (e) { /* navegação privada */ } }
+  var analyticsLigado = false;
+  function ligarAnalytics() {
+    var id = idAnalytics();
+    if (!id || analyticsLigado) return;
+    analyticsLigado = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    // sem sinais de publicidade: só estatística de visitas
+    window.gtag('config', id, { allow_google_signals: false, allow_ad_personalization_signals: false });
+    var sc = document.createElement('script');
+    sc.async = true;
+    sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+    document.head.appendChild(sc);
+  }
+  function mostrarAviso() {
+    if (document.getElementById('avisoCookies')) return;
+    var el = document.createElement('div');
+    el.id = 'avisoCookies'; el.className = 'aviso-cookies';
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Aviso de cookies');
+    el.innerHTML = '<p>Usamos cookies do Google Analytics para contar as visitas e melhorar o site. Você pode aceitar ou recusar; o site funciona igual nos dois casos. <a href="' + R + 'privacidade.html">Saiba mais</a></p>' +
+      '<div class="aviso-cookies-botoes"><button class="btn btn-claro" type="button" data-escolha="nao">Recusar</button>' +
+      '<button class="btn btn-acao" type="button" data-escolha="sim">Aceitar</button></div>';
+    el.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-escolha]');
+      if (!b) return;
+      var v = b.getAttribute('data-escolha') === 'sim' ? 'sim' : 'nao', antes = lerEscolha();
+      gravarEscolha(v);
+      el.remove();
+      if (v === 'sim') ligarAnalytics();
+      else if (antes === 'sim') location.reload(); // para de medir já nesta visita
+    });
+    document.body.appendChild(el);
+  }
+  function montarConsentimento() {
+    if (!idAnalytics()) return;
+    var escolha = lerEscolha();
+    if (escolha === 'sim') ligarAnalytics();
+    else if (!escolha) mostrarAviso();
+    [].forEach.call(document.querySelectorAll('[data-cookies]'), function (b) { b.addEventListener('click', mostrarAviso); });
   }
 
   /* ---------- publicidade ---------- */

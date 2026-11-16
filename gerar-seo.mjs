@@ -26,7 +26,10 @@ const snap = W.TAXAS_SNAPSHOT;
 
 const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 const [ano, mes] = snap.mes.split('-');
-const rotuloMes = `${MESES[+mes - 1]} de ${ano}`;
+const rotuloMes = `${MESES[+mes - 1]} de ${ano}`; // mês dos contratos na última divulgação do Banco Central
+// mês vigente (horário de Brasília): vai nos títulos; a rotina diária regrava as páginas quando o mês vira
+const [anoAtual, mesAtual] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).format(new Date()).split('-');
+const rotuloAtual = `${MESES[+mesAtual - 1]} de ${anoAtual}`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const SETA = CC.SETA;
@@ -103,8 +106,8 @@ for (const id of ids) {
     return `<tr><td>${LINHA[t.linha]}</td><td>${IDX[t.idx]}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${p}º de ${r.length}</td><td class="n">${f.brl(parcela(t))}</td></tr>`;
   }).join('\n');
   const comparacao = rk.map((t, i) => `<tr${t.id === id ? ' style="background:var(--lavanda)"' : ''}><td>${i + 1}º</td><td>${t.id === id ? `<b>${esc(nome)}</b>` : `<a href="../${pagina[t.id]}">${esc(nomeDe(t.id))}</a>`}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${f.brl(parcela(t))}</td></tr>`).join('\n');
-  const titulo = `Financiamento imobiliário ${nome}: taxa de juros em ${rotuloMes}`;
-  const descricao = `O ${nome} cobrou em média ${f.pct(principal.aa, 2)} ao ano no financiamento imobiliário em ${rotuloMes} (${LINHA[principal.linha]}, ${IDX[principal.idx]}). Veja parcela, posição no ranking e compare com outros bancos.`;
+  const titulo = `Financiamento imobiliário ${nome}: taxa de juros em ${rotuloAtual}`;
+  const descricao = `Taxa do financiamento imobiliário ${nome} atualizada em ${rotuloAtual}: média de ${f.pct(principal.aa, 2)} ao ano (${LINHA[principal.linha]}, ${IDX[principal.idx]}) na divulgação mais recente do Banco Central. Veja parcela, posição no ranking e compare com outros bancos.`;
   const avisos = [
     b.regiao ? `<p>O ${esc(nome)} tem atuação concentrada no estado: ${esc(b.regiao)}. Confirme se há atendimento na sua cidade.</p>` : '',
     b.coop ? `<p>O ${esc(nome)} é um sistema de cooperativas de crédito: para contratar é preciso associar-se a uma cooperativa.</p>` : ''
@@ -114,13 +117,13 @@ for (const id of ids) {
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="../index.html">Início</a> › <a href="../bancos.html">Taxas por banco</a> › ${esc(nome)}</p>
-    <h1>Financiamento imobiliário ${esc(nome)}: taxas de ${rotuloMes}</h1>
-    <p>Taxa média de juros que o ${esc(nome)} cobrou nos contratos fechados no mês, segundo o Banco Central.</p>
+    <h1>Financiamento imobiliário ${esc(nome)}: taxas de ${rotuloAtual}</h1>
+    <p>Taxa média de juros que o ${esc(nome)} cobra nos contratos de financiamento, segundo a divulgação mais recente do Banco Central.</p>
   </div>
 </section>
 <div class="container post">
   <article class="artigo">
-    <p class="lide">Em ${rotuloMes}, o ${esc(nome)} cobrou em média <b>${f.pct(principal.aa, 2)} ao ano</b> nos financiamentos imobiliários da linha ${LINHA[principal.linha]} com correção por ${IDX[principal.idx]}. Com isso ficou em <b>${pos}º lugar entre ${rk.length} instituições</b> nessa modalidade.</p>
+    <p class="lide">Na divulgação mais recente do Banco Central, com os contratos de ${rotuloMes}, o ${esc(nome)} cobrou em média <b>${f.pct(principal.aa, 2)} ao ano</b> nos financiamentos imobiliários da linha ${LINHA[principal.linha]} com correção por ${IDX[principal.idx]}. Com isso ficou em <b>${pos}º lugar entre ${rk.length} instituições</b> nessa modalidade.</p>
 
     <h2>Taxas do ${esc(nome)} por modalidade</h2>
     <table>
@@ -129,14 +132,14 @@ for (const id of ids) {
 ${linhasTab}
       </tbody>
     </table>
-    <p class="nota">*Exemplo: R$ 400.000 financiados em 30 anos pela tabela SAC, imóvel de R$ 500.000, com seguros estimados. Fonte das taxas: Banco Central do Brasil, ${rotuloMes}.</p>
+    <p class="nota">*Exemplo: R$ 400.000 financiados em 30 anos pela tabela SAC, imóvel de R$ 500.000, com seguros estimados. Fonte das taxas: Banco Central do Brasil, divulgação mais recente (contratos de ${rotuloMes}). Página atualizada em ${rotuloAtual}.</p>
 
     <div class="cta-linha"><p>Simule o seu valor no ${esc(nome)} e nos outros bancos.</p><a class="btn btn-acao" href="../comparar.html?l=${principal.linha}&i=${principal.idx}">Comparar bancos${SETA}</a></div>
 
     <div class="anuncio" data-formato="faixa" data-bloco="bancos"></div>
 
     <h2>Como o ${esc(nome)} se compara</h2>
-    <p>Ranking de ${rotuloMes} na linha ${LINHA[principal.linha]}, correção por ${IDX[principal.idx]}:</p>
+    <p>Ranking atualizado em ${rotuloAtual} na linha ${LINHA[principal.linha]}, correção por ${IDX[principal.idx]}:</p>
     <table>
       <thead><tr><th>Posição</th><th>Instituição</th><th class="n">Taxa ao ano</th><th class="n">1ª parcela*</th></tr></thead>
       <tbody>
@@ -164,13 +167,13 @@ ${comparacao}
 
 /* ---------- índice de bancos ---------- */
 const ordem = ranking('reg', 'tr').map((t) => t.id).concat(ids).filter((id, i, a) => a.indexOf(id) === i);
-gravar('bancos.html', cabeca('', `Taxas de financiamento imobiliário por banco em ${rotuloMes} | Financie Imóvel`,
-  `Taxa de juros do financiamento imobiliário em cada banco em ${rotuloMes}: Caixa, Banco do Brasil, Itaú, Bradesco, Santander e outros, com dados do Banco Central.`) + `
+gravar('bancos.html', cabeca('', `Taxas de financiamento imobiliário por banco em ${rotuloAtual} | Financie Imóvel`,
+  `Taxa de juros do financiamento imobiliário em cada banco, atualizada em ${rotuloAtual}: Caixa, Banco do Brasil, Itaú, Bradesco, Santander e outros, com dados do Banco Central.`) + `
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="index.html">Início</a> › Taxas por banco</p>
     <h1>Taxas de financiamento imobiliário por banco</h1>
-    <p>Referência: ${rotuloMes}. Escolha uma instituição para ver as taxas em cada modalidade e a posição no ranking.</p>
+    <p>Atualizado em ${rotuloAtual}, com a divulgação mais recente do Banco Central (contratos de ${rotuloMes}). Escolha uma instituição para ver as taxas em cada modalidade e a posição no ranking.</p>
   </div>
 </section>
 <div class="container">
@@ -199,14 +202,18 @@ gravar('dados/paginas-bancos.js', '/* Gerado por gerar-seo.mjs */\nwindow.PAGINA
 // Com anúncios ligados (CONFIG.anuncios.cliente), libera também os domínios de publicidade do Google.
 const comAnuncios = !!(CC.CONFIG.anuncios && CC.CONFIG.anuncios.cliente);
 const leadOrigem = (() => { try { return new URL(CC.CONFIG.leadEndpoint).origin; } catch { return ''; } })();
+// Com medição ligada (CONFIG.analytics.id), libera só os domínios do Google Analytics.
+const comAnalytics = /^G-[A-Z0-9]{4,20}$/.test(String((CC.CONFIG.analytics && CC.CONFIG.analytics.id) || ''));
+const GA_SCRIPT = 'https://www.googletagmanager.com';
+const GA_DADOS = 'https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com';
 const GOOGLE_ADS = 'https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google';
 const CSP = [
   "default-src 'self'",
-  `script-src 'self'${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
+  `script-src 'self'${comAnalytics ? ' ' + GA_SCRIPT : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  `img-src 'self' data:${comAnuncios ? ' https:' : ''}`,
-  `connect-src 'self' https://olinda.bcb.gov.br${leadOrigem ? ' ' + leadOrigem : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
+  `img-src 'self' data:${comAnuncios ? ' https:' : comAnalytics ? ' ' + GA_DADOS : ''}`,
+  `connect-src 'self' https://olinda.bcb.gov.br${leadOrigem ? ' ' + leadOrigem : ''}${comAnalytics ? ' ' + GA_DADOS : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
   `frame-src ${comAnuncios ? GOOGLE_ADS : "'none'"}`,
   "object-src 'none'",
   "base-uri 'self'",
@@ -238,11 +245,12 @@ ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="
     : h.replace(/(<meta name="description"[^>]*>\n)/, `$1${bloco}\n`);
   gravar(p, h);
 }
-const hoje = (snap.geradoEm || new Date().toISOString()).slice(0, 10);
+// data das páginas no sitemap: a mais recente entre a virada do mês vigente e a última troca de taxas
+const hoje = [`${anoAtual}-${mesAtual}-01`, (snap.geradoEm || '').slice(0, 10)].sort().pop();
 gravar('robots.txt', `User-agent: *\nAllow: /\n${dominio ? `\nSitemap: ${dominio}/sitemap.xml\n` : ''}`);
 if (dominio) {
   gravar('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    paginas.filter((p) => p !== 'privacidade.html').map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
+    paginas.map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
 }
 console.log(`OK: ${ids.length} páginas de banco, índice, lista do blog e metadados em ${paginas.length} páginas.` +
   (dominio ? ' sitemap.xml gerado.' : ' ATENÇÃO: preencha "dominio" em site.config.json para gerar sitemap.xml e endereços canônicos.'));
