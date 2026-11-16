@@ -439,3 +439,17 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
 .oferta-ebook li { display: flex; gap: 10px; }
 .oferta-ebook li::before { content: ""; flex: none; width: 20px; height: 20px; border-radius: 50%; margin-top: 2px; background: var(--verde) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.3l3 3 6-6.5' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/20px; }
 @media (max-width: 1000px) { .recebe { grid-template-columns: 1fr 1fr; } }
+
+/* preço de/por e selos de confiança */
+.de-por { margin: 10px 0 0; color: var(--tinta-2); font-size: 1.05rem; }
+.de-por span { display: inline-block; background: var(--amarelo); color: var(--marinho); font-size: .72rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: 3px 9px; border-radius: 3px; margin-right: 6px; vertical-align: 2px; }
+.de-por s, .ebook-hero .preco s, .anuncio-ebook s { text-decoration-thickness: 2px; opacity: .75; }
+.anuncio-ebook .det b { color: var(--tinta); }
+.selos { max-width: 860px; margin: 26px auto 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.selos span { display: grid; justify-items: center; text-align: center; gap: 2px; padding: 16px 12px; border: 1px solid var(--linha); border-radius: 10px; background: #fff; }
+.selos svg { width: 30px; height: 30px; color: var(--verde); margin-bottom: 4px; }
+.selos b { font-size: .98rem; }
+.selos small { color: var(--tinta-2); font-size: .82rem; line-height: 1.35; }
+.mini-selos { margin: 14px 0 0; font-size: .88rem; color: #cfd4f2; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.mini-selos svg { width: 17px; height: 17px; color: #7fe9c8; }
+@media (max-width: 800px) { .selos { grid-template-columns: 1fr 1fr; } }

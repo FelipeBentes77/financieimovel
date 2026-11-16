@@ -23,6 +23,9 @@ window.CC = (function () {
       nome: 'Do Sonho às Chaves',
       subtitulo: 'O guia completo para financiar, comprar e reformar seu imóvel',
       preco: 'R$ 37',
+      // Preço cheio, mostrado riscado ("de/por"). Deixe vazio para não mostrar.
+      precoDe: 'R$ 50',
+      rotuloOferta: 'Oferta de lançamento',
       // Link de pagamento na Hotmart (produto 8985563, vendas ativas desde 15/11/2026)
       checkout: 'https://pay.hotmart.com/E108516263H'
     },
@@ -203,7 +206,7 @@ window.CC = (function () {
         el.innerHTML = '<a class="anuncio-ebook' + (lateral ? ' lateral' : '') + '" href="' + R + 'ebook.html">' +
           '<span class="mini-capa" aria-hidden="true"><b>Do Sonho</b><em>às Chaves</em></span>' +
           '<span class="txt"><small>Ebook Financie Imóvel</small><strong>O passo a passo para financiar, comprar e reformar pagando menos</strong>' +
-          '<span class="det">23 capítulos e 3 planilhas' + (p.preco ? ' · ' + f.esc(p.preco) : '') + '</span></span>' +
+          '<span class="det">23 capítulos e 3 planilhas' + (p.preco ? ' · ' + (p.precoDe ? '<s>' + f.esc(p.precoDe) + '</s> ' : '') + '<b>' + f.esc(p.preco) + '</b>' : '') + '</span></span>' +
           '<span class="btn btn-acao">' + (p.checkout ? 'Quero o ebook' : 'Conhecer') + SETA + '</span></a>';
       });
       return;
