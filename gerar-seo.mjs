@@ -197,7 +197,11 @@ gravar('dados/paginas-bancos.js', '/* Gerado por gerar-seo.mjs */\nwindow.PAGINA
 {
   const MES_CURTO = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
   const dataCurta = (iso) => { const [a2, m2, d2] = String(iso).split('-'); return `${+d2} de ${MES_CURTO[+m2 - 1]} de ${a2}`; };
-  const cartoes = (W.POSTS || []).map((p, i) => `<a class="cartao-post${i === 0 ? ' destaque' : ''}" href="blog/${p.slug}.html"><div class="capa"><img src="assets/blog/${p.slug}${i === 0 ? '' : '-p'}.jpg" alt="" width="${i === 0 ? 1200 : 640}" height="${i === 0 ? 675 : 360}"${i === 0 ? '' : ' loading="lazy"'}><span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${esc(p.data)} · ${p.minutos} min de leitura</small></div></a>`).join('\n');
+  const cartaoPost = (p, destaque) => `<a class="cartao-post${destaque ? ' destaque' : ''}" href="blog/${p.slug}.html"><div class="capa"><picture><source srcset="assets/blog/${p.slug}${destaque ? '' : '-p'}.webp" type="image/webp"><img src="assets/blog/${p.slug}${destaque ? '' : '-p'}.jpg" alt="" width="${destaque ? 1200 : 640}" height="${destaque ? 675 : 360}"${destaque ? '' : ' loading="lazy"'}></picture><span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${esc(p.data)} · ${p.minutos} min de leitura</small></div></a>`;
+  const cartoes = (W.POSTS || []).map((p, i) => cartaoPost(p, i === 0)).join('\n');
+  // os três artigos mais recentes também aparecem na página inicial
+  const ultimos = (W.POSTS || []).slice(0, 3).map((p) => cartaoPost(p, false)).join('\n');
+  gravar('index.html', ler('index.html').replace(/<!--ultimos:inicio-->[\s\S]*?<!--ultimos:fim-->/, () => `<!--ultimos:inicio-->\n${ultimos}\n<!--ultimos:fim-->`));
   const html = ler('blog.html').replace(/<div class="blog-lista" id="blogLista">[\s\S]*?<\/div><!--fim-lista-->|<div class="blog-lista" id="blogLista"><\/div>/,
     `<div class="blog-lista" id="blogLista">\n${cartoes}\n</div><!--fim-lista-->`);
   gravar('blog.html', html);
@@ -238,7 +242,7 @@ const texto = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', ...o }).replace(/</g, '\\u003c')}</script>`;
 const ORG = { '@type': 'Organization', name: 'Financie Imóvel', url: `${dominio}/`, logo: `${dominio}/assets/logo.svg` };
 const postDe = Object.fromEntries((W.POSTS || []).map((x) => [`blog/${x.slug}.html`, x]));
-const SECAO = { 'comparar.html': 'Comparar bancos', 'quanto-posso-financiar.html': 'Quanto posso financiar', 'guias.html': 'Guias', 'blog.html': 'Blog', 'ebook.html': 'Ebook', 'bancos.html': 'Taxas por banco', 'privacidade.html': 'Privacidade e cookies' };
+const SECAO = { 'comparar.html': 'Comparar bancos', 'quanto-posso-financiar.html': 'Quanto posso financiar', 'guias.html': 'Guias', 'blog.html': 'Blog', 'ebook.html': 'Ebook', 'bancos.html': 'Taxas por banco', 'privacidade.html': 'Privacidade e cookies', 'sobre.html': 'Sobre' };
 const migalhas = (itens) => ld({ '@type': 'BreadcrumbList', itemListElement: itens.map(([name, caminho], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${dominio}/${caminho}` })) });
 
 for (const p of paginas) {
@@ -259,8 +263,10 @@ for (const p of paginas) {
       if (faq.length) dadosEstruturados.push(ld({ '@type': 'FAQPage', mainEntity: faq.map((m) => ({ '@type': 'Question', name: texto(m[1]), acceptedAnswer: { '@type': 'Answer', text: texto(m[2]) } })) }));
     } else if (postDe[p]) {
       const x = postDe[p];
-      dadosEstruturados.push(ld({ '@type': 'Article', headline: x.titulo, description: x.descricao || x.resumo, datePublished: x.iso, dateModified: hojeISO, inLanguage: 'pt-BR',
-        image: `${dominio}/assets/blog/${x.slug}.jpg`, mainEntityOfPage: url, author: ORG, publisher: ORG }));
+      dadosEstruturados.push(ld({ '@type': 'Article', headline: x.titulo, description: x.descricao || x.resumo, datePublished: x.iso, dateModified: x.mod || x.iso, inLanguage: 'pt-BR',
+        image: `${dominio}/assets/blog/${x.slug}.jpg`, mainEntityOfPage: url, author: { '@type': 'Organization', name: 'Equipe Financie Imóvel', url: `${dominio}/sobre.html` }, publisher: ORG }));
+      const faqPost = [...((h.match(/class="faq-artigo"[\s\S]*?<\/section>/) || [''])[0]).matchAll(/<details><summary>([\s\S]*?)<\/summary><p>([\s\S]*?)<\/p><\/details>/g)];
+      if (faqPost.length) dadosEstruturados.push(ld({ '@type': 'FAQPage', mainEntity: faqPost.map((m) => ({ '@type': 'Question', name: texto(m[1]), acceptedAnswer: { '@type': 'Answer', text: texto(m[2]) } })) }));
       dadosEstruturados.push(migalhas([['Início', ''], ['Blog', 'blog.html'], [x.titulo, p]]));
     } else if (p.startsWith('bancos/')) {
       dadosEstruturados.push(ld({ '@type': 'WebPage', name: h1, description: desc, url, dateModified: hojeISO, inLanguage: 'pt-BR', isPartOf: { '@type': 'WebSite', name: 'Financie Imóvel', url: `${dominio}/` } }));

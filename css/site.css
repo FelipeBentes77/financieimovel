@@ -486,3 +486,25 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
   .cartao-post.destaque .txt { padding: 20px; }
   .rel-lista { grid-template-columns: 1fr; }
 }
+
+/* artigo: autoria, sumário, fontes */
+.post-meta a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+.sumario { background: var(--lavanda); border-radius: 10px; padding: 18px 22px; margin: 6px 0 28px; font-size: .98rem; }
+.sumario b { display: block; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--marinho); margin-bottom: 8px; }
+.sumario ol { margin: 0; padding-left: 1.2em; columns: 2; column-gap: 28px; }
+.sumario li { margin: 0 0 6px; break-inside: avoid; line-height: 1.35; }
+.sumario a { color: var(--marinho); text-decoration: none; font-weight: 600; }
+.sumario a:hover { text-decoration: underline; }
+.artigo h2[id] { scroll-margin-top: 90px; }
+.faq-artigo .duvidas { max-width: none; margin: 0; }
+.fontes ul { padding-left: 1.2em; font-size: .97rem; }
+.fontes li { margin-bottom: 6px; }
+.autor-box { display: flex; gap: 16px; align-items: flex-start; border: 1px solid var(--linha); border-radius: 10px; padding: 20px 22px; margin: 34px 0 10px; background: #fff; }
+.autor-box img { width: 48px; height: 48px; flex-shrink: 0; }
+.autor-box b { font-size: 1.05rem; }
+.autor-box p { margin: 4px 0 8px; font-size: .95rem; line-height: 1.5; color: var(--tinta-2); }
+.autor-box a { font-weight: 700; font-size: .95rem; }
+.blog-lista.sem-topo { padding-top: 0; }
+.capa picture, .capa-artigo picture { display: block; width: 100%; height: 100%; }
+.rel-lista picture { display: block; }
+@media (max-width: 640px) { .sumario ol { columns: 1; } }

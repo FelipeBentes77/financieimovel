@@ -26,8 +26,27 @@ const posts = readdirSync(origem).filter((n) => n.endsWith('.html')).map((nome) 
   return { ...dados, slug: nome.replace(/\.html$/, ''), corpo: texto.slice(m[0].length).trim() };
 }).sort((a, b) => b.data.localeCompare(a.data) || a.slug.localeCompare(b.slug));
 
+const MINIBIO = 'A Equipe Financie Imóvel reúne e analisa os dados abertos do Banco Central para explicar o crédito imobiliário em linguagem simples. O conteúdo é educativo e não substitui a orientação de um profissional.';
+const ancora = (t) => t.replace(/<[^>]+>/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const foto = (r, slug, sufixo, w, h, alt, extra = '') => `<picture><source srcset="${r}assets/blog/${slug}${sufixo}.webp" type="image/webp"><img src="${r}assets/blog/${slug}${sufixo}.jpg" alt="${esc(alt)}" width="${w}" height="${h}"${extra}></picture>`;
+
 for (const p of posts) {
-  const corpo = p.corpo
+  const faq = Array.isArray(p.faq) ? p.faq : [], fontes = Array.isArray(p.fontes) ? p.fontes : [];
+  // sumário: cada subtítulo ganha uma âncora
+  const itens = [];
+  let texto = p.corpo.replace(/<h2>([\s\S]*?)<\/h2>/g, (_, t) => { const id = ancora(t); itens.push([id, t.replace(/<[^>]+>/g, '')]); return `<h2 id="${id}">${t}</h2>`; });
+  if (faq.length) itens.push(['perguntas-frequentes', 'Perguntas frequentes']);
+  const sumario = itens.length >= 3 ? `<nav class="sumario" aria-label="Neste artigo"><b>Neste artigo</b><ol>${itens.map(([id, t]) => `<li><a href="#${id}">${esc(t)}</a></li>`).join('')}</ol></nav>` : '';
+  texto = /<p class="lide">[\s\S]*?<\/p>/.test(texto) ? texto.replace(/(<p class="lide">[\s\S]*?<\/p>)/, (m) => m + '\n\n' + sumario) : sumario + texto;
+  const blocoFaq = faq.length ? `
+    <section class="faq-artigo"><h2 id="perguntas-frequentes">Perguntas frequentes</h2>
+    <div class="duvidas">
+${faq.map(([q, a]) => `      <details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('\n')}
+    </div></section>` : '';
+  const blocoFontes = fontes.length ? `
+    <div class="fontes"><h2 id="fontes">Fontes</h2><ul>${fontes.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join('')}</ul></div>` : '';
+  const mod = p.atualizado || p.data;
+  const corpo = texto
     .replace(/<!--anuncio-->/g, '<div class="anuncio" data-formato="faixa" data-bloco="blog_meio"></div>')
     .replace(/<!--comparar:(.*?)-->/g, (_, frase) => `<div class="cta-linha"><p>${frase}</p><a class="btn btn-acao" href="../comparar.html">Comparar bancos${SETA}</a></div>`);
   const html = `<!doctype html>
@@ -53,13 +72,14 @@ for (const p of posts) {
   <div class="container">
     <p class="migalhas"><a href="../index.html">Início</a> › <a href="../blog.html">Blog</a> › ${esc(p.categoria)}</p>
     <h1>${esc(p.titulo)}</h1>
-    <p class="post-meta">${dataBr(p.data)} · ${p.minutos} min de leitura</p>
+    <p class="post-meta">Por <a href="../sobre.html">Equipe Financie Imóvel</a> · Publicado em ${dataBr(p.data)} · Atualizado em ${dataBr(mod)} · ${p.minutos} min de leitura</p>
   </div>
 </section>
 <div class="container post">
   <article class="artigo">
-    <figure class="capa-artigo"><img src="../assets/blog/${p.slug}.jpg" alt="${esc(p.titulo)}" width="1200" height="675"></figure>
-${corpo}
+    <figure class="capa-artigo">${foto('../', p.slug, '', 1200, 675, p.titulo, ' fetchpriority="high"')}</figure>
+${corpo}${blocoFaq}${blocoFontes}
+    <div class="autor-box"><img src="../assets/logo.svg" alt="" width="48" height="48"><div><b>Equipe Financie Imóvel</b><p>${MINIBIO}</p><a href="../sobre.html">Quem somos e como trabalhamos</a></div></div>
     <div class="anuncio" data-formato="faixa" data-bloco="blog_fim"></div>
     <div data-promo="ebook"></div>
     <div class="relacionados" id="relacionados"></div>
@@ -80,7 +100,7 @@ ${corpo}
   writeFileSync(join(destino, p.slug + '.html'), html, 'utf8');
 }
 
-const lista = posts.map(({ slug, titulo, resumo, categoria, data, minutos, cor }) => ({ slug, titulo, resumo, categoria, data: dataBr(data), iso: data, minutos, cor: cor || '#ff5c39' }));
+const lista = posts.map(({ slug, titulo, resumo, categoria, data, atualizado, minutos, cor }) => ({ slug, titulo, resumo, categoria, data: dataBr(data), iso: data, mod: atualizado || data, minutos, cor: cor || '#ff5c39' }));
 writeFileSync(join(raiz, 'js', 'posts.js'),
   '/* Gerado por gerar-blog.mjs. Não edite à mão: altere os textos em conteudo/blog/ e rode o script. */\nwindow.POSTS = ' + JSON.stringify(lista, null, 1) + ';\n', 'utf8');
 console.log(`OK: ${posts.length} artigos gerados em blog/ e lista atualizada em js/posts.js`);

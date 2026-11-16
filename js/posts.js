@@ -7,6 +7,7 @@ window.POSTS = [
   "categoria": "Crédito",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -17,6 +18,7 @@ window.POSTS = [
   "categoria": "Planejamento",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -27,6 +29,7 @@ window.POSTS = [
   "categoria": "Planejamento",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -37,6 +40,7 @@ window.POSTS = [
   "categoria": "Quem já financia",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#2f54eb"
  },
@@ -47,6 +51,7 @@ window.POSTS = [
   "categoria": "Crédito",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -57,6 +62,7 @@ window.POSTS = [
   "categoria": "Crédito",
   "data": "16 nov 2026",
   "iso": "2026-11-16",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -67,6 +73,7 @@ window.POSTS = [
   "categoria": "Quem já financia",
   "data": "15 nov 2026",
   "iso": "2026-11-15",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#2f54eb"
  },
@@ -77,6 +84,7 @@ window.POSTS = [
   "categoria": "Crédito",
   "data": "15 nov 2026",
   "iso": "2026-11-15",
+  "mod": "2026-11-16",
   "minutos": 6,
   "cor": "#ffd23f"
  },
@@ -87,6 +95,7 @@ window.POSTS = [
   "categoria": "Planejamento",
   "data": "15 nov 2026",
   "iso": "2026-11-15",
+  "mod": "2026-11-16",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -97,6 +106,7 @@ window.POSTS = [
   "categoria": "Reforma",
   "data": "15 nov 2026",
   "iso": "2026-11-15",
+  "mod": "2026-11-16",
   "minutos": 6,
   "cor": "#0f8a5f"
  }
