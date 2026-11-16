@@ -106,14 +106,14 @@ for (const id of ids) {
     return `<tr><td>${LINHA[t.linha]}</td><td>${IDX[t.idx]}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${p}º de ${r.length}</td><td class="n">${f.brl(parcela(t))}</td></tr>`;
   }).join('\n');
   const comparacao = rk.map((t, i) => `<tr${t.id === id ? ' style="background:var(--lavanda)"' : ''}><td>${i + 1}º</td><td>${t.id === id ? `<b>${esc(nome)}</b>` : `<a href="../${pagina[t.id]}">${esc(nomeDe(t.id))}</a>`}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${f.brl(parcela(t))}</td></tr>`).join('\n');
-  const titulo = `Financiamento imobiliário ${nome}: taxa de juros em ${rotuloAtual}`;
-  const descricao = `Taxa do financiamento imobiliário ${nome} atualizada em ${rotuloAtual}: média de ${f.pct(principal.aa, 2)} ao ano (${LINHA[principal.linha]}, ${IDX[principal.idx]}) na divulgação mais recente do Banco Central. Veja parcela, posição no ranking e compare com outros bancos.`;
+  const titulo = `Financiamento imobiliário ${nome}: taxas de ${rotuloAtual}`;
+  const descricao = `Financiamento imobiliário ${nome}: taxa média de ${f.pct(principal.aa, 2)} ao ano, atualizada em ${rotuloAtual}. Veja a parcela, a posição no ranking e compare com outros bancos.`;
   const avisos = [
     b.regiao ? `<p>O ${esc(nome)} tem atuação concentrada no estado: ${esc(b.regiao)}. Confirme se há atendimento na sua cidade.</p>` : '',
     b.coop ? `<p>O ${esc(nome)} é um sistema de cooperativas de crédito: para contratar é preciso associar-se a uma cooperativa.</p>` : ''
   ].join('');
 
-  gravar(pagina[id], genero(id, cabeca('../', `${titulo} | Financie Imóvel`, descricao) + `
+  gravar(pagina[id], genero(id, cabeca('../', titulo, descricao) + `
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="../index.html">Início</a> › <a href="../bancos.html">Taxas por banco</a> › ${esc(nome)}</p>
@@ -167,8 +167,8 @@ ${comparacao}
 
 /* ---------- índice de bancos ---------- */
 const ordem = ranking('reg', 'tr').map((t) => t.id).concat(ids).filter((id, i, a) => a.indexOf(id) === i);
-gravar('bancos.html', cabeca('', `Taxas de financiamento imobiliário por banco em ${rotuloAtual} | Financie Imóvel`,
-  `Taxa de juros do financiamento imobiliário em cada banco, atualizada em ${rotuloAtual}: Caixa, Banco do Brasil, Itaú, Bradesco, Santander e outros, com dados do Banco Central.`) + `
+gravar('bancos.html', cabeca('', `Taxas de financiamento imobiliário por banco: ${rotuloAtual}`,
+  `Taxa de juros do financiamento imobiliário em cada banco, atualizada em ${rotuloAtual}: Caixa, Banco do Brasil, Itaú, Bradesco, Santander e outros.`) + `
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="index.html">Início</a> › Taxas por banco</p>
@@ -225,32 +225,74 @@ const paginas = [
   ...readdirSync(join(raiz, 'blog')).filter((n) => n.endsWith('.html')).map((n) => 'blog/' + n),
   ...readdirSync(join(raiz, 'bancos')).filter((n) => n.endsWith('.html')).map((n) => 'bancos/' + n)
 ];
+// data das páginas no sitemap: a mais recente entre a virada do mês vigente e a última troca de taxas
+const hojeISO = [`${anoAtual}-${mesAtual}-01`, (snap.geradoEm || '').slice(0, 10)].sort().pop();
+const MARCA = ' | Financie Imóvel';
+const texto = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/\s+/g, ' ').trim();
+const ld = (o) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', ...o }).replace(/</g, '\\u003c')}</script>`;
+const ORG = { '@type': 'Organization', name: 'Financie Imóvel', url: `${dominio}/`, logo: `${dominio}/assets/logo.svg` };
+const postDe = Object.fromEntries((W.POSTS || []).map((x) => [`blog/${x.slug}.html`, x]));
+const SECAO = { 'comparar.html': 'Comparar bancos', 'quanto-posso-financiar.html': 'Quanto posso financiar', 'guias.html': 'Guias', 'blog.html': 'Blog', 'ebook.html': 'Ebook', 'bancos.html': 'Taxas por banco', 'privacidade.html': 'Privacidade e cookies' };
+const migalhas = (itens) => ld({ '@type': 'BreadcrumbList', itemListElement: itens.map(([name, caminho], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${dominio}/${caminho}` })) });
+
 for (const p of paginas) {
   let h = ler(p);
-  const titulo = (h.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+  const oculta = p === '404.html';
+  // título longo demais é cortado no resultado da busca: tira a marca do fim quando passa de 65 caracteres
+  let titulo = (h.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+  if (titulo.length > 65 && titulo.endsWith(MARCA)) { titulo = titulo.slice(0, -MARCA.length); h = h.replace(/<title>[\s\S]*?<\/title>/, `<title>${titulo}</title>`); }
   const desc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
-  const url = dominio ? `${dominio}/${p === 'index.html' ? '' : p}` : '';
+  const url = dominio && !oculta ? `${dominio}/${p === 'index.html' ? '' : p}` : '';
+  const h1 = texto((h.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || [])[1] || titulo);
+
+  const dadosEstruturados = [];
+  if (dominio && !oculta) {
+    if (p === 'index.html') {
+      dadosEstruturados.push(ld({ '@type': 'WebSite', name: 'Financie Imóvel', alternateName: 'Simulador de financiamento imobiliário', url: `${dominio}/`, inLanguage: 'pt-BR', publisher: ORG }));
+      const faq = [...((h.match(/id="duvidas"[\s\S]*?<\/section>/) || [''])[0]).matchAll(/<details><summary>([\s\S]*?)<\/summary><p>([\s\S]*?)<\/p><\/details>/g)];
+      if (faq.length) dadosEstruturados.push(ld({ '@type': 'FAQPage', mainEntity: faq.map((m) => ({ '@type': 'Question', name: texto(m[1]), acceptedAnswer: { '@type': 'Answer', text: texto(m[2]) } })) }));
+    } else if (postDe[p]) {
+      const x = postDe[p];
+      dadosEstruturados.push(ld({ '@type': 'Article', headline: x.titulo, description: x.descricao || x.resumo, datePublished: x.data, dateModified: hojeISO, inLanguage: 'pt-BR',
+        image: `${dominio}/assets/og.png`, mainEntityOfPage: url, author: ORG, publisher: ORG }));
+      dadosEstruturados.push(migalhas([['Início', ''], ['Blog', 'blog.html'], [x.titulo, p]]));
+    } else if (p.startsWith('bancos/')) {
+      dadosEstruturados.push(ld({ '@type': 'WebPage', name: h1, description: desc, url, dateModified: hojeISO, inLanguage: 'pt-BR', isPartOf: { '@type': 'WebSite', name: 'Financie Imóvel', url: `${dominio}/` } }));
+      dadosEstruturados.push(migalhas([['Início', ''], ['Taxas por banco', 'bancos.html'], [h1, p]]));
+    } else {
+      if (p === 'ebook.html') {
+        const pr = CC.CONFIG.produto, valor = (String(pr.preco).match(/\d+(?:[.,]\d+)?/) || [''])[0].replace(',', '.');
+        if (valor && pr.checkout) dadosEstruturados.push(ld({ '@type': 'Product', name: `${pr.nome}: ${pr.subtitulo}`, description: desc, image: `${dominio}/assets/ebook-capa.png`, category: 'Ebook',
+          brand: { '@type': 'Brand', name: 'Financie Imóvel' }, offers: { '@type': 'Offer', price: Number(valor).toFixed(2), priceCurrency: 'BRL', availability: 'https://schema.org/InStock', url } }));
+      }
+      if (p === 'comparar.html' || p === 'quanto-posso-financiar.html') dadosEstruturados.push(ld({ '@type': 'WebApplication', name: h1, description: desc, url, applicationCategory: 'FinanceApplication', operatingSystem: 'Web', inLanguage: 'pt-BR',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' } }));
+      dadosEstruturados.push(migalhas([['Início', ''], [SECAO[p] || h1, p]]));
+    }
+  }
+
   const bloco = `<!--seo:inicio-->
 <meta http-equiv="Content-Security-Policy" content="${CSP}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="${oculta ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}">
+<meta name="theme-color" content="#101a4a">
 ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="${url}">\n` : ''}<meta property="og:site_name" content="Financie Imóvel">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="${p.startsWith('blog/') ? 'article' : 'website'}">
 <meta property="og:title" content="${titulo}">
 <meta property="og:description" content="${desc}">
-<meta name="twitter:card" content="summary">
-<!--seo:fim-->`;
+${dominio ? `<meta property="og:image" content="${dominio}/assets/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:image" content="${dominio}/assets/og.png">\n` : ''}<meta name="twitter:card" content="summary_large_image">
+${dadosEstruturados.join('\n')}${dadosEstruturados.length ? '\n' : ''}<!--seo:fim-->`;
   h = h.replace(/<meta property="og:(type|title|description)"[^>]*>\n/g, '');
-  h = /<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/.test(h) ? h.replace(/<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/, bloco)
-    : h.replace(/(<meta name="description"[^>]*>\n)/, `$1${bloco}\n`);
+  h = /<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/.test(h) ? h.replace(/<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/, () => bloco)
+    : h.replace(/(<meta name="description"[^>]*>\n)/, (m) => `${m}${bloco}\n`);
   gravar(p, h);
 }
-// data das páginas no sitemap: a mais recente entre a virada do mês vigente e a última troca de taxas
-const hoje = [`${anoAtual}-${mesAtual}-01`, (snap.geradoEm || '').slice(0, 10)].sort().pop();
+const hoje = hojeISO;
 gravar('robots.txt', `User-agent: *\nAllow: /\n${dominio ? `\nSitemap: ${dominio}/sitemap.xml\n` : ''}`);
 if (dominio) {
   gravar('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    paginas.map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
+    paginas.filter((p) => p !== '404.html').map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
 }
 console.log(`OK: ${ids.length} páginas de banco, índice, lista do blog e metadados em ${paginas.length} páginas.` +
   (dominio ? ' sitemap.xml gerado.' : ' ATENÇÃO: preencha "dominio" em site.config.json para gerar sitemap.xml e endereços canônicos.'));

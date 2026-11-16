@@ -45,7 +45,6 @@ for (const p of posts) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/site.css">
-<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@type': 'Article', headline: p.titulo, description: p.descricao || p.resumo, datePublished: p.data, author: { '@type': 'Organization', name: 'Financie Imóvel' } })}</script>
 </head>
 <body>
 <header id="cabecalho"></header>
