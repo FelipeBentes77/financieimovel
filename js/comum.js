@@ -193,7 +193,7 @@ window.CC = (function () {
         '<div class="rod-grade">' +
           '<div><a class="logo" href="' + R + 'index.html">' + LOGO + '<span>financie<b>imóvel</b></span></a>' +
             '<p>Comparador independente de crédito imobiliário. Não somos instituição financeira e não concedemos crédito.</p></div>' +
-          '<div><h4>Ferramentas</h4>' + a('comparar.html', 'Comparar bancos') + a('bancos.html', 'Taxas por banco') + a('quanto-posso-financiar.html', 'Quanto posso financiar') + a('comparar.html?s=price', 'Simular tabela Price') + a('comparar.html?s=sac', 'Simular tabela SAC') + '</div>' +
+          '<div><h4>Ferramentas</h4>' + a('comparar.html', 'Comparar bancos') + a('ranking-taxas-financiamento-imobiliario.html', 'Ranking do mês') + a('bancos.html', 'Taxas por banco') + a('quanto-posso-financiar.html', 'Quanto posso financiar') + a('comparar.html?s=price', 'Simular tabela Price') + a('comparar.html?s=sac', 'Simular tabela SAC') + '</div>' +
           '<div><h4>Aprenda</h4>' + a('blog.html', 'Blog') + a('guias.html', 'Guias rápidos') + a('ebook.html', 'Ebook: ' + CONFIG.produto.nome) + a('guias.html#metodologia', 'Metodologia') + '</div>' +
           '<div><h4>Sobre</h4>' + a('sobre.html', 'Quem somos') + a('index.html#como-funciona', 'Como funciona') + a('index.html#duvidas', 'Dúvidas frequentes') + a('privacidade.html', 'Privacidade e cookies') +
             (idAnalytics() ? '<button class="rod-link" type="button" data-cookies>Preferências de cookies</button>' : '') + '</div>' +

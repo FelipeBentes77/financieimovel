@@ -19,7 +19,7 @@ if (snap) {
 }
 
 // 2) páginas
-const fixas = ['index.html', 'comparar.html', 'quanto-posso-financiar.html', 'guias.html', 'blog.html', 'ebook.html', 'bancos.html', 'privacidade.html', 'sobre.html', '404.html', 'sitemap.xml', 'robots.txt', 'CNAME'];
+const fixas = ['index.html', 'comparar.html', 'quanto-posso-financiar.html', 'guias.html', 'blog.html', 'ebook.html', 'bancos.html', 'privacidade.html', 'sobre.html', 'ranking-taxas-financiamento-imobiliario.html', 'dados/ranking-taxas.csv', '404.html', 'sitemap.xml', 'robots.txt', 'CNAME'];
 for (const f of fixas) if (!existsSync(join(raiz, f))) erros.push('arquivo ausente: ' + f);
 const bancos = readdirSync(join(raiz, 'bancos')).filter((n) => n.endsWith('.html'));
 if (bancos.length < 8) erros.push(`só ${bancos.length} páginas de banco (mínimo 8)`);
@@ -45,7 +45,7 @@ for (const m of ler('sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)) {
   if (!existsSync(join(raiz, caminho))) erros.push('sitemap aponta para página inexistente: ' + caminho);
 }
 // 4) fotos dos artigos
-for (const n of blog) for (const suf of ['.jpg', '-p.jpg', '.webp', '-p.webp']) { const f = 'assets/blog/' + n.replace('.html', suf); if (!existsSync(join(raiz, f))) erros.push('foto ausente: ' + f); }
+for (const n of blog) for (const suf of ['.jpg', '-m.jpg', '-p.jpg', '.webp', '-m.webp', '-p.webp', '.avif', '-m.avif', '-p.avif']) { const f = 'assets/blog/' + n.replace('.html', suf); if (!existsSync(join(raiz, f))) erros.push('foto ausente: ' + f); }
 
 if (erros.length) { console.log('ERRO: o site gerado tem problemas e NÃO será publicado:\n- ' + erros.join('\n- ')); process.exit(1); }
 console.log(`Site conferido: ${paginas.length} páginas, ${bancos.length} bancos, ${blog.length} artigos, taxas de ${snap.mes}.`);

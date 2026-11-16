@@ -5,11 +5,15 @@
   var MESES = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
   var dataCurta = function (iso) { var p = String(iso).split('-'); return p.length === 3 ? (+p[2]) + ' de ' + MESES[+p[1] - 1] + ' de ' + p[0] : String(iso); };
   var slugOk = function (v) { return /^[a-z0-9-]+$/.test(v) ? v : ''; };
+  var miniatura = function (c) {
+    return '<picture><source type="image/avif" srcset="' + c + '-p.avif"><source type="image/webp" srcset="' + c + '-p.webp"><img src="' + c + '-p.jpg" alt="" width="640" height="360" loading="lazy" decoding="async"></picture>';
+  };
   var cartao = function (p, i) {
-    var destaque = i === 0, g = slugOk(p.slug);
+    var destaque = i === 0, g = slugOk(p.slug), c = R + 'assets/blog/' + g;
     return '<a class="cartao-post' + (destaque ? ' destaque' : '') + '" href="' + R + 'blog/' + g + '.html"><div class="capa">' +
-      '<picture><source srcset="' + R + 'assets/blog/' + g + (destaque ? '' : '-p') + '.webp" type="image/webp">' +
-      '<img src="' + R + 'assets/blog/' + g + (destaque ? '' : '-p') + '.jpg" alt="" width="' + (destaque ? 1200 : 640) + '" height="' + (destaque ? 675 : 360) + '"' + (destaque ? '' : ' loading="lazy"') + '></picture>' +
+      (destaque
+        ? '<picture><source type="image/avif" srcset="' + c + '-m.avif 800w, ' + c + '.avif 1200w" sizes="(max-width: 900px) 100vw, 700px"><source type="image/webp" srcset="' + c + '-m.webp 800w, ' + c + '.webp 1200w" sizes="(max-width: 900px) 100vw, 700px"><img src="' + c + '.jpg" alt="" width="1200" height="675" decoding="async"></picture>'
+        : miniatura(c)) +
       '<span>' + f.esc(p.categoria) + '</span></div>' +
       '<div class="txt"><h3>' + f.esc(p.titulo) + '</h3><p>' + f.esc(p.resumo) + '</p><small>' + dataCurta(p.data) + ' · ' + Number(p.minutos) + ' min de leitura</small></div></a>';
   };
@@ -30,7 +34,7 @@
     $('relacionados').innerHTML = '<h3>Continue lendo</h3><div class="rel-lista">' + POSTS.filter(function (p) { return p.slug !== atual; }).slice(0, 3)
       .map(function (p) {
         var g = slugOk(p.slug);
-        return '<a href="' + R + 'blog/' + g + '.html"><picture><source srcset="' + R + 'assets/blog/' + g + '-p.webp" type="image/webp"><img src="' + R + 'assets/blog/' + g + '-p.jpg" alt="" width="640" height="360" loading="lazy"></picture>' +
+        return '<a href="' + R + 'blog/' + g + '.html">' + miniatura(R + 'assets/blog/' + g) +
           '<span><small>' + f.esc(p.categoria) + '</small>' + f.esc(p.titulo) + '</span></a>';
       }).join('') + '</div>';
   }

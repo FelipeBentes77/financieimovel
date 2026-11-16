@@ -28,7 +28,12 @@ const posts = readdirSync(origem).filter((n) => n.endsWith('.html')).map((nome) 
 
 const MINIBIO = 'A Equipe Financie Imóvel reúne e analisa os dados abertos do Banco Central para explicar o crédito imobiliário em linguagem simples. O conteúdo é educativo e não substitui a orientação de um profissional.';
 const ancora = (t) => t.replace(/<[^>]+>/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const foto = (r, slug, sufixo, w, h, alt, extra = '') => `<picture><source srcset="${r}assets/blog/${slug}${sufixo}.webp" type="image/webp"><img src="${r}assets/blog/${slug}${sufixo}.jpg" alt="${esc(alt)}" width="${w}" height="${h}"${extra}></picture>`;
+// foto do topo: o navegador escolhe o formato (AVIF, WebP ou JPEG) e o tamanho (800 ou 1200 px) conforme a tela
+const TAMANHOS = '(max-width: 900px) 100vw, 760px';
+const fotoTopo = (r, slug, alt) => { const c = `${r}assets/blog/${slug}`; return `<picture>` +
+  `<source type="image/avif" srcset="${c}-m.avif 800w, ${c}.avif 1200w" sizes="${TAMANHOS}">` +
+  `<source type="image/webp" srcset="${c}-m.webp 800w, ${c}.webp 1200w" sizes="${TAMANHOS}">` +
+  `<img src="${c}.jpg" srcset="${c}-m.jpg 800w, ${c}.jpg 1200w" sizes="${TAMANHOS}" alt="${esc(alt)}" width="1200" height="675" fetchpriority="high" decoding="async"></picture>`; };
 
 for (const p of posts) {
   const faq = Array.isArray(p.faq) ? p.faq : [], fontes = Array.isArray(p.fontes) ? p.fontes : [];
@@ -74,7 +79,7 @@ ${faq.map(([q, a]) => `      <details><summary>${esc(q)}</summary><p>${esc(a)}</
 </section>
 <div class="container post">
   <article class="artigo">
-    <figure class="capa-artigo">${foto('../', p.slug, '', 1200, 675, p.titulo, ' fetchpriority="high"')}</figure>
+    <figure class="capa-artigo">${fotoTopo('../', p.slug, p.titulo)}</figure>
 ${corpo}${blocoFaq}${blocoFontes}
     <div class="autor-box"><img src="../assets/logo.svg" alt="" width="48" height="48"><div><b>Equipe Financie Imóvel</b><p>${MINIBIO}</p><a href="../sobre.html">Quem somos e como trabalhamos</a></div></div>
     <div class="anuncio" data-formato="faixa" data-bloco="blog_fim"></div>

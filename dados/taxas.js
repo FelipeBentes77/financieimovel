@@ -1,5 +1,5 @@
 window.TAXAS_SNAPSHOT = {
- "geradoEm": "2026-11-16T22:52:55.447Z",
+ "geradoEm": "2026-11-16T23:10:57.448Z",
  "mes": "2026-10",
  "linhas": [
   {
@@ -352,5 +352,210 @@ window.TAXAS_SNAPSHOT = {
    "cnpj8": "00360305",
    "anoMes": "2026-10"
   }
- ]
+ ],
+ "anterior": {
+  "mes": "2026-09",
+  "linhas": [
+   {
+    "cnpj8": "00360305",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Prefixado",
+    "TaxaJurosAoAno": 10.94
+   },
+   {
+    "cnpj8": "33264668",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Prefixado",
+    "TaxaJurosAoAno": 14.57
+   },
+   {
+    "cnpj8": "90400888",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Prefixado",
+    "TaxaJurosAoAno": 15.04
+   },
+   {
+    "cnpj8": "00655522",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Prefixado",
+    "TaxaJurosAoAno": 18.62
+   },
+   {
+    "cnpj8": "92702067",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 9.39
+   },
+   {
+    "cnpj8": "00556603",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 9.53
+   },
+   {
+    "cnpj8": "28127603",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.72
+   },
+   {
+    "cnpj8": "02038232",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.79
+   },
+   {
+    "cnpj8": "04913711",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.92
+   },
+   {
+    "cnpj8": "13009717",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 11.12
+   },
+   {
+    "cnpj8": "01181521",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 11.56
+   },
+   {
+    "cnpj8": "00360305",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 12.05
+   },
+   {
+    "cnpj8": "60701190",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 12.14
+   },
+   {
+    "cnpj8": "60746948",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 12.24
+   },
+   {
+    "cnpj8": "90400888",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 12.31
+   },
+   {
+    "cnpj8": "00416968",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 12.91
+   },
+   {
+    "cnpj8": "00000000",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 14.49
+   },
+   {
+    "cnpj8": "00795423",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 9.19
+   },
+   {
+    "cnpj8": "00556603",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 14.69
+   },
+   {
+    "cnpj8": "62232889",
+    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 15.48
+   },
+   {
+    "cnpj8": "00360305",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Prefixado",
+    "TaxaJurosAoAno": 10.94
+   },
+   {
+    "cnpj8": "00655522",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Prefixado",
+    "TaxaJurosAoAno": 14.27
+   },
+   {
+    "cnpj8": "00360305",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 7.98
+   },
+   {
+    "cnpj8": "00416968",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 9.66
+   },
+   {
+    "cnpj8": "02038232",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.01
+   },
+   {
+    "cnpj8": "04913711",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.21
+   },
+   {
+    "cnpj8": "92702067",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.35
+   },
+   {
+    "cnpj8": "01181521",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.5
+   },
+   {
+    "cnpj8": "13009717",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.54
+   },
+   {
+    "cnpj8": "00655522",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.61
+   },
+   {
+    "cnpj8": "00000000",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.61
+   },
+   {
+    "cnpj8": "28127603",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.62
+   },
+   {
+    "cnpj8": "00000208",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 10.65
+   },
+   {
+    "cnpj8": "60746948",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 11.77
+   },
+   {
+    "cnpj8": "90400888",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 11.85
+   },
+   {
+    "cnpj8": "60701190",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+    "TaxaJurosAoAno": 11.87
+   },
+   {
+    "cnpj8": "00360305",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 4.84
+   },
+   {
+    "cnpj8": "04913711",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 6.18
+   },
+   {
+    "cnpj8": "02038232",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 8.85
+   },
+   {
+    "cnpj8": "00000000",
+    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em IPCA",
+    "TaxaJurosAoAno": 11.03
+   }
+  ]
+ }
 };

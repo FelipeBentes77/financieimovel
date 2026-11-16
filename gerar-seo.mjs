@@ -33,6 +33,7 @@ const rotuloAtual = `${MESES[+mesAtual - 1]} de ${anoAtual}`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 const slug = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const SETA = CC.SETA;
+const RANKING = 'ranking-taxas-financiamento-imobiliario.html';
 const LINHA = { reg: 'SFH (taxas reguladas)', mer: 'SFI (taxas de mercado)' };
 const IDX = { tr: 'TR', ipca: 'IPCA', pre: 'Taxa fixa' };
 const EX = { imovel: 500000, financiado: 400000, meses: 360, sistema: 'sac', mip: P.mip / 100, dfi: P.dfi / 100, adm: P.adm };
@@ -173,7 +174,7 @@ gravar('bancos.html', cabeca('', `Taxas de financiamento imobiliário por banco:
   <div class="container">
     <p class="migalhas"><a href="index.html">Início</a> › Taxas por banco</p>
     <h1>Taxas de financiamento imobiliário por banco</h1>
-    <p>Atualizado em ${rotuloAtual}, com a divulgação mais recente do Banco Central (contratos de ${rotuloMes}). Escolha uma instituição para ver as taxas em cada modalidade e a posição no ranking.</p>
+    <p>Atualizado em ${rotuloAtual}, com a divulgação mais recente do Banco Central (contratos de ${rotuloMes}). Veja também o <a href="${RANKING}">ranking do mês</a>. Escolha uma instituição para ver as taxas em cada modalidade e a posição no ranking.</p>
   </div>
 </section>
 <div class="container">
@@ -190,11 +191,91 @@ ${ordem.map((id) => {
 ` + pe(''));
 gravar('dados/paginas-bancos.js', '/* Gerado por gerar-seo.mjs */\nwindow.PAGINAS_BANCOS = ' + JSON.stringify(pagina, null, 1) + ';\n');
 
+/* ---------- ranking do mês (página para citação e imprensa) ---------- */
+{
+  const modalidade = (l) => `${/reguladas/.test(l.Modalidade) ? 'reg' : 'mer'}|${/Prefixado/.test(l.Modalidade) ? 'pre' : /IPCA/.test(l.Modalidade) ? 'ipca' : 'tr'}`;
+  const antes = new Map(((snap.anterior && snap.anterior.linhas) || []).map((l) => [`${l.cnpj8}|${modalidade(l)}`, Number(l.TaxaJurosAoAno)]));
+  const mesAnt = snap.anterior && snap.anterior.mes ? `${MESES[+snap.anterior.mes.slice(5, 7) - 1]} de ${snap.anterior.mes.slice(0, 4)}` : '';
+  const variacao = (t) => {
+    const a = antes.get(`${t.id}|${t.linha}|${t.idx}`);
+    if (!antes.size) return '';
+    if (a === undefined) return '<td class="n"><span class="var novo">novo</span></td>';
+    const d = Math.round((t.aa - a) * 100) / 100;
+    if (!d) return '<td class="n"><span class="var igual">estável</span></td>';
+    return `<td class="n"><span class="var ${d < 0 ? 'caiu' : 'subiu'}">${d < 0 ? '▼' : '▲'} ${Math.abs(d).toFixed(2).replace('.', ',')} p.p.</span></td>`;
+  };
+  const NOME_MOD = { 'reg|tr': 'SFH com correção pela TR', 'mer|tr': 'SFI (taxas de mercado) com correção pela TR', 'reg|ipca': 'SFH com correção pelo IPCA', 'mer|ipca': 'SFI (taxas de mercado) com correção pelo IPCA', 'reg|pre': 'SFH com taxa fixa', 'mer|pre': 'SFI (taxas de mercado) com taxa fixa' };
+  const grupos = Object.keys(NOME_MOD).map((k) => { const [linha, idx] = k.split('|'); return { k, linha, idx, lista: ranking(linha, idx) }; }).filter((g) => g.lista.length >= 3);
+  const mediana = (l) => { const v = l.map((t) => t.aa).sort((a, b) => a - b); return v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2; };
+  const principal = grupos.find((g) => g.k === 'reg|tr') || grupos[0];
+  const top3 = principal.lista.slice(0, 3).map((t) => `${nomeDe(t.id)} (${f.pct(t.aa, 2)})`);
+  const dataAtual = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(snap.geradoEm || Date.now()));
+  const resumo = `Na divulgação mais recente do Banco Central, com os contratos de ${rotuloMes}, as três menores taxas médias de financiamento imobiliário na modalidade ${NOME_MOD[principal.k]} foram: ${top3.join(', ')}. Entre as ${principal.lista.length} instituições que informaram taxa nessa modalidade, a mediana ficou em ${f.pct(mediana(principal.lista), 2)} ao ano.`;
+  const tabelas = grupos.map((g) => `
+    <h2 id="${g.linha}-${g.idx}">${NOME_MOD[g.k]}</h2>
+    <p>${g.lista.length} instituições. Menor taxa: <b>${f.pct(g.lista[0].aa, 2)} ao ano</b>. Mediana: ${f.pct(mediana(g.lista), 2)} ao ano.</p>
+    <div class="tabela-rolagem"><table>
+      <thead><tr><th>Posição</th><th>Instituição</th><th class="n">Taxa ao ano</th>${antes.size ? `<th class="n">Variação no mês</th>` : ''}<th class="n">1ª parcela*</th></tr></thead>
+      <tbody>
+${g.lista.map((t, i) => `<tr><td>${i + 1}º</td><td><a href="${pagina[t.id]}">${esc(nomeDe(t.id))}</a>${(BANCOS[t.id] || {}).regiao ? ' <small class="muted">(regional)</small>' : ''}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td>${variacao(t)}<td class="n">${f.brl(parcela(t))}</td></tr>`).join('\n')}
+      </tbody>
+    </table></div>
+    <p><a href="comparar.html?l=${g.linha}&i=${g.idx}">Simular nessa modalidade${SETA}</a></p>`).join('\n');
+  // planilha com os mesmos números, para quem quiser citar ou reaproveitar
+  const csv = ['modalidade;posicao;instituicao;cnpj_raiz;taxa_ao_ano;mes_dos_contratos', ...grupos.flatMap((g) => g.lista.map((t, i) => [NOME_MOD[g.k], i + 1, nomeDe(t.id), t.id, String(t.aa).replace('.', ','), snap.mes].join(';')))].join('\r\n') + '\r\n';
+  gravar('dados/ranking-taxas.csv', '﻿' + csv);
+  gravar(RANKING, cabeca('', `Ranking das taxas de financiamento imobiliário: ${rotuloAtual}`,
+    `Ranking de ${rotuloAtual} com as menores taxas de juros do financiamento imobiliário por banco, a variação no mês e a parcela de exemplo. Dados do Banco Central.`) + `
+<section class="topo-pag">
+  <div class="container">
+    <p class="migalhas"><a href="index.html">Início</a> › Ranking das taxas</p>
+    <h1>Ranking das taxas de financiamento imobiliário: ${rotuloAtual}</h1>
+    <p class="post-meta">Por <a href="sobre.html">Equipe Financie Imóvel</a> · Atualizado em ${dataAtual} · Contratos de ${rotuloMes}</p>
+  </div>
+</section>
+<div class="container post">
+  <article class="artigo">
+    <p class="lide">${esc(resumo)}</p>
+    <nav class="sumario" aria-label="Nesta página"><b>Nesta página</b><ol>${grupos.map((g) => `<li><a href="#${g.linha}-${g.idx}">${NOME_MOD[g.k]}</a></li>`).join('')}<li><a href="#como-ler">Como ler o ranking</a></li><li><a href="#citar">Para citar estes dados</a></li></ol></nav>
+${tabelas}
+    <p class="nota">*Exemplo: R$ 400.000 financiados em 30 anos pela tabela SAC, imóvel de R$ 500.000, com seguros estimados.${mesAnt ? ` Variação em pontos percentuais em relação aos contratos de ${mesAnt}.` : ''} Fonte das taxas: Banco Central do Brasil.</p>
+
+    <div class="cta-linha"><p>Veja a parcela e o custo total para o valor do seu imóvel.</p><a class="btn btn-acao" href="comparar.html">Comparar bancos${SETA}</a></div>
+    <div class="anuncio" data-formato="faixa" data-bloco="bancos"></div>
+
+    <h2 id="como-ler">Como ler o ranking</h2>
+    <ul>
+      <li><b>O que é a taxa:</b> a média dos juros de todos os contratos que cada instituição fechou no mês, informada ao Banco Central. A taxa oferecida a você depende da renda, da entrada, do imóvel e do relacionamento com o banco.</li>
+      <li><b>Mês dos dados:</b> o Banco Central divulga cada mês com cerca de seis semanas de intervalo. Esta página mostra sempre a divulgação mais recente e é conferida automaticamente duas vezes por dia.</li>
+      <li><b>Médias muito baixas:</b> instituições que operam programas habitacionais com juros subsidiados têm a média puxada para baixo por essas linhas.</li>
+      <li><b>Instituições regionais:</b> atuam em um estado ou região; confirme se há atendimento na sua cidade.</li>
+      <li><b>Compare o custo total:</b> além dos juros, entram seguros e tarifas. Use o <a href="comparar.html">comparador</a> para ver o Custo Efetivo Total em cada banco.</li>
+    </ul>
+
+    <h2 id="citar">Para citar estes dados</h2>
+    <p>Jornalistas, blogs e sites podem reproduzir os números desta página, com indicação da fonte e link para <b>${dominio ? dominio.replace('https://', '') : 'o site'}</b>. Sugestão de crédito: “Fonte: Financie Imóvel, com dados do Banco Central do Brasil”.</p>
+    <p><a class="btn btn-claro" href="dados/ranking-taxas.csv" download>Baixar a tabela completa (CSV)</a></p>
+
+    <div data-promo="ebook"></div>
+  </article>
+  <aside class="lateral-post">
+    <div class="caixa"><h3>Compare os bancos</h3><p class="muted" style="font-size:.93rem">Parcela e custo total do seu financiamento em cada instituição.</p><a class="btn btn-acao btn-bloco" href="comparar.html">Comparar agora${SETA}</a></div>
+    <div class="caixa"><h3>Taxas por banco</h3><p class="muted" style="font-size:.93rem">Uma página para cada instituição, com todas as modalidades.</p><a class="btn btn-claro btn-bloco" href="bancos.html">Ver os bancos</a></div>
+    <div class="anuncio" data-formato="retangulo" data-bloco="bancos_lateral"></div>
+    <div data-promo="ebook-lateral"></div>
+  </aside>
+</div>
+` + pe(''));
+}
+
 /* ---------- lista de artigos dentro de blog.html ---------- */
 {
   const MES_CURTO = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
   const dataCurta = (iso) => { const [a2, m2, d2] = String(iso).split('-'); return `${+d2} de ${MES_CURTO[+m2 - 1]} de ${a2}`; };
-  const cartaoPost = (p, destaque) => `<a class="cartao-post${destaque ? ' destaque' : ''}" href="blog/${p.slug}.html"><div class="capa"><picture><source srcset="assets/blog/${p.slug}${destaque ? '' : '-p'}.webp" type="image/webp"><img src="assets/blog/${p.slug}${destaque ? '' : '-p'}.jpg" alt="" width="${destaque ? 1200 : 640}" height="${destaque ? 675 : 360}"${destaque ? '' : ' loading="lazy"'}></picture><span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${esc(p.data)} · ${p.minutos} min de leitura</small></div></a>`;
+  const fotoCartao = (p, destaque) => { const c = `assets/blog/${p.slug}`; return destaque
+    ? `<picture><source type="image/avif" srcset="${c}-m.avif 800w, ${c}.avif 1200w" sizes="(max-width: 900px) 100vw, 700px"><source type="image/webp" srcset="${c}-m.webp 800w, ${c}.webp 1200w" sizes="(max-width: 900px) 100vw, 700px"><img src="${c}.jpg" alt="" width="1200" height="675" fetchpriority="high" decoding="async"></picture>`
+    : `<picture><source type="image/avif" srcset="${c}-p.avif"><source type="image/webp" srcset="${c}-p.webp"><img src="${c}-p.jpg" alt="" width="640" height="360" loading="lazy" decoding="async"></picture>`; };
+  const cartaoPost = (p, destaque) => `<a class="cartao-post${destaque ? ' destaque' : ''}" href="blog/${p.slug}.html"><div class="capa">${fotoCartao(p, destaque)}<span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${esc(p.data)} · ${p.minutos} min de leitura</small></div></a>`;
   const cartoes = (W.POSTS || []).map((p, i) => cartaoPost(p, i === 0)).join('\n');
   // os três artigos mais recentes também aparecem na página inicial
   const ultimos = (W.POSTS || []).slice(0, 3).map((p) => cartaoPost(p, false)).join('\n');
@@ -239,7 +320,7 @@ const texto = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&
 const ld = (o) => `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', ...o }).replace(/</g, '\\u003c')}</script>`;
 const ORG = { '@type': 'Organization', name: 'Financie Imóvel', url: `${dominio}/`, logo: `${dominio}/assets/logo.svg` };
 const postDe = Object.fromEntries((W.POSTS || []).map((x) => [`blog/${x.slug}.html`, x]));
-const SECAO = { 'comparar.html': 'Comparar bancos', 'quanto-posso-financiar.html': 'Quanto posso financiar', 'guias.html': 'Guias', 'blog.html': 'Blog', 'ebook.html': 'Ebook', 'bancos.html': 'Taxas por banco', 'privacidade.html': 'Privacidade e cookies', 'sobre.html': 'Sobre' };
+const SECAO = { 'comparar.html': 'Comparar bancos', 'quanto-posso-financiar.html': 'Quanto posso financiar', 'guias.html': 'Guias', 'blog.html': 'Blog', 'ebook.html': 'Ebook', 'bancos.html': 'Taxas por banco', 'privacidade.html': 'Privacidade e cookies', 'sobre.html': 'Sobre', [RANKING]: 'Ranking das taxas' };
 const migalhas = (itens) => ld({ '@type': 'BreadcrumbList', itemListElement: itens.map(([name, caminho], i) => ({ '@type': 'ListItem', position: i + 1, name, item: `${dominio}/${caminho}` })) });
 
 for (const p of paginas) {
@@ -274,6 +355,9 @@ for (const p of paginas) {
         if (valor && pr.checkout) dadosEstruturados.push(ld({ '@type': 'Product', name: `${pr.nome}: ${pr.subtitulo}`, description: desc, image: `${dominio}/assets/ebook-capa.png`, category: 'Ebook',
           brand: { '@type': 'Brand', name: 'Financie Imóvel' }, offers: { '@type': 'Offer', price: Number(valor).toFixed(2), priceCurrency: 'BRL', availability: 'https://schema.org/InStock', url } }));
       }
+      if (p === RANKING) dadosEstruturados.push(ld({ '@type': 'Dataset', name: h1, description: desc, url, inLanguage: 'pt-BR', dateModified: (snap.geradoEm || '').slice(0, 10) || hojeISO, temporalCoverage: snap.mes,
+        creator: ORG, isBasedOn: 'https://www.bcb.gov.br/estatisticas/txjuros', isAccessibleForFree: true,
+        distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${dominio}/dados/ranking-taxas.csv` }] }));
       if (p === 'comparar.html' || p === 'quanto-posso-financiar.html') dadosEstruturados.push(ld({ '@type': 'WebApplication', name: h1, description: desc, url, applicationCategory: 'FinanceApplication', operatingSystem: 'Web', inLanguage: 'pt-BR',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' } }));
       dadosEstruturados.push(migalhas([['Início', ''], [SECAO[p] || h1, p]]));
@@ -283,7 +367,7 @@ for (const p of paginas) {
   const imagem = postDe[p] ? `${dominio}/assets/blog/${postDe[p].slug}.jpg` : `${dominio}/assets/og.png`;
   const rz = oculta ? '/' : p.includes('/') ? '../' : '';
   const precarga = `<link rel="preload" href="${rz}assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>` +
-    (postDe[p] ? `\n<link rel="preload" href="${rz}assets/blog/${postDe[p].slug}.webp" as="image" type="image/webp" fetchpriority="high">` : '');
+    (postDe[p] ? `\n<link rel="preload" as="image" type="image/avif" imagesrcset="${rz}assets/blog/${postDe[p].slug}-m.avif 800w, ${rz}assets/blog/${postDe[p].slug}.avif 1200w" imagesizes="(max-width: 900px) 100vw, 760px" fetchpriority="high">` : '');
   const bloco = `<!--seo:inicio-->
 <meta http-equiv="Content-Security-Policy" content="${CSP}">
 <meta name="referrer" content="strict-origin-when-cross-origin">

@@ -59,6 +59,10 @@ for (const l of brutas) {
 if (brutas.length - doMes.length > brutas.length * 0.2) falhar(`${brutas.length - doMes.length} de ${brutas.length} linhas de ${mes} são inválidas`);
 if (doMes.length < MIN_TAXAS) falhar(`só ${doMes.length} taxas válidas em ${mes} (mínimo ${MIN_TAXAS})`);
 const instituicoes = new Set(doMes.map((l) => l.cnpj8));
+// mês imediatamente anterior presente na resposta: serve só para calcular a variação no ranking
+const mesAnterior = linhas.map((l) => String(l.anoMes)).filter((m) => /^\d{4}-\d{2}$/.test(m) && m < mes).sort().pop() || '';
+const anterior = mesAnterior ? { mes: mesAnterior, linhas: linhas.filter((l) => l.anoMes === mesAnterior && /^\d{8}$/.test(String(l.cnpj8)) && Number(l.TaxaJurosAoAno) > 0 && Number(l.TaxaJurosAoAno) <= TAXA_MAX)
+  .map((l) => ({ cnpj8: l.cnpj8, Modalidade: l.Modalidade, TaxaJurosAoAno: l.TaxaJurosAoAno })) } : null;
 if (instituicoes.size < MIN_INSTITUICOES) falhar(`só ${instituicoes.size} instituições em ${mes} (mínimo ${MIN_INSTITUICOES})`);
 for (const [cnpj, nome] of Object.entries(OBRIGATORIOS)) if (!instituicoes.has(cnpj)) falhar(`${nome} não aparece nos dados de ${mes}`);
 
@@ -75,7 +79,7 @@ if (existsSync(destino)) {
 if (atual) {
   if (String(atual.mes) > mes) falhar(`o Banco Central devolveu ${mes}, mais antigo que o que já está no site (${atual.mes})`);
   // só regrava quando os dados mudaram, para não gerar publicações sem novidade
-  if (atual.mes === mes && JSON.stringify(atual.linhas) === JSON.stringify(doMes)) {
+  if (atual.mes === mes && JSON.stringify(atual.linhas) === JSON.stringify(doMes) && JSON.stringify(atual.anterior || null) === JSON.stringify(anterior)) {
     resumo(`Taxas conferidas: sem novidade. O site já está com a divulgação mais recente do Banco Central (${mes}, ${doMes.length} taxas de ${instituicoes.size} instituições).`);
     if (avisos.length) resumo('Avisos:\n- ' + avisos.join('\n- '));
     process.exit(0);
@@ -89,7 +93,7 @@ if (atual) {
   }
 }
 
-const snapshot = { geradoEm: new Date().toISOString(), mes, linhas: doMes };
+const snapshot = { geradoEm: new Date().toISOString(), mes, linhas: doMes, anterior };
 writeFileSync(destino, 'window.TAXAS_SNAPSHOT = ' + JSON.stringify(snapshot, null, 1) + ';\n', 'utf8');
 resumo(`OK: ${doMes.length} taxas de ${mes} gravadas em dados/taxas.js (${instituicoes.size} instituições).` +
   (atual ? ` Antes: ${atual.mes}.` : ''));
