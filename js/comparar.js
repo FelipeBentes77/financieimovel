@@ -145,7 +145,6 @@
             '</div>' +
             '<div class="botoes">' +
               (CC.linkBanco(o.id) ? '<a class="btn btn-banco" href="' + f.esc(CC.linkBanco(o.id)) + '" target="_blank" rel="noopener sponsored" data-saida="' + id + '">Ir ao site oficial' + CC.SETA + '</a>' : '') +
-              '<button class="btn btn-claro" type="button" data-lead="' + id + '">Quero ajuda com esta proposta' + CC.SETA + '</button>' +
             '</div>' +
           '</div>' +
           '<p class="exemplo"><b>Exemplo desta simulação:</b> ' + f.brl(c.financiado) + ' em ' + c.meses + ' meses a ' + f.pct(r.aa, 2) + ' a.a.' +
@@ -249,10 +248,9 @@
     }
   });
   $('lista').addEventListener('click', function (e) {
-    var alvo = e.target.closest('[data-abre],[data-reset],[data-remove],[data-lead]');
+    var alvo = e.target.closest('[data-abre],[data-reset],[data-remove]');
     if (!alvo) return;
     var d = alvo.dataset, c = cenario();
-    if (d.lead != null) { abrirLead(d.lead, c); return; }
     if (d.abre != null) estado.abertos[d.abre] = !estado.abertos[d.abre];
     else if (d.reset != null) delete estado.ajustes[chave(d.reset, c)];
     else if (d.remove != null) { estado.ofertas = estado.ofertas.filter(function (o) { return o.id !== d.remove; }); salvarOfertas(); }
@@ -264,39 +262,6 @@
     if (!nome || !(aa > 0 && aa < 40)) { $('ofertaTaxa').focus(); return; }
     estado.ofertas.push({ id: 'p' + Date.now(), nome: nome, aa: aa });
     salvarOfertas(); this.reset(); calcular();
-  });
-
-  /* ---------- pedido de proposta ---------- */
-  var leadAtual = null;
-  function abrirLead(id, c) {
-    var r = estado.ultimo.filter(function (x) { return x.op.id === id; })[0];
-    if (!r) return;
-    leadAtual = { banco: r.op.nome, taxa: r.aa, c: c };
-    $('leadTitulo').textContent = 'Receber proposta: ' + r.op.nome;
-    $('leadResumo').textContent = f.brl(c.financiado) + ' em ' + (c.meses / 12) + ' anos · ' + descricao(c) + ' · 1ª parcela estimada de ' + f.brl(r.primeira);
-    $('leadMsg').hidden = true;
-    $('dlgLead').showModal();
-  }
-  $('fecharLead').addEventListener('click', function () { $('dlgLead').close(); });
-  $('dlgLead').addEventListener('click', function (e) { if (e.target === this) this.close(); });
-  $('formLead').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var msg = $('leadMsg');
-    msg.hidden = false; msg.className = 'aviso';
-    if (!this.checkValidity()) { msg.textContent = 'Preencha nome, WhatsApp, e-mail e marque a autorização.'; return; }
-    if (!/^https:\/\//.test(CC.CONFIG.leadEndpoint)) { msg.textContent = 'O envio de pedidos ainda não está ativo neste site. Seus dados não foram enviados.'; return; }
-    var c = leadAtual.c;
-    fetch(CC.CONFIG.leadEndpoint, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        nome: $('leadNome').value, whatsapp: $('leadFone').value, email: $('leadEmail').value,
-        banco: leadAtual.banco, taxa: leadAtual.taxa,
-        cenario: { imovel: c.imovel, entrada: c.entrada, meses: c.meses, sistema: c.sistema, indexador: c.idx, linha: c.linha, renda: c.renda }
-      })
-    }).then(function (r) {
-      if (!r.ok) throw new Error();
-      msg.className = 'aviso ok'; msg.textContent = 'Pedido recebido. Entraremos em contato.';
-    }).catch(function () { msg.textContent = 'Não foi possível enviar agora. Tente de novo em instantes.'; });
   });
 
   CC.montarPagina('comparar');
