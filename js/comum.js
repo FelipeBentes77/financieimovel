@@ -23,9 +23,8 @@ window.CC = (function () {
       nome: 'Do Sonho às Chaves',
       subtitulo: 'O guia completo para financiar, comprar e reformar seu imóvel',
       preco: 'R$ 37',
-      // Link de pagamento na Hotmart (produto 8985563): https://pay.hotmart.com/E108516263H
-      // Só colocar aqui depois que a Hotmart aprovar o produto; vazio = botão "Lançamento em breve".
-      checkout: ''
+      // Link de pagamento na Hotmart (produto 8985563, vendas ativas desde 15/11/2026)
+      checkout: 'https://pay.hotmart.com/E108516263H'
     },
 
     // LINKS DOS BANCOS. Para trocar o destino de um banco por um link de parceria ou afiliado,
