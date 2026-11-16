@@ -68,7 +68,7 @@ const cabeca = (r, titulo, descricao) => `<!doctype html>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${r}css/site.css">
 </head>
-<body>
+<body data-pagina="bancos">
 <header id="cabecalho"></header>
 <main>`;
 const pe = (r) => `</main>
@@ -78,7 +78,7 @@ const pe = (r) => `</main>
 <script src="${r}dados/links-bancos.js"></script>
 <script src="${r}dados/paginas-bancos.js"></script>
 <script src="${r}js/comum.js"></script>
-<script>CC.montarPagina('bancos'); CC.iniciarDados();</script>
+<script src="${r}js/pagina.js"></script>
 </body>
 </html>
 `;
@@ -195,6 +195,23 @@ gravar('dados/paginas-bancos.js', '/* Gerado por gerar-seo.mjs */\nwindow.PAGINA
   gravar('blog.html', html);
 }
 
+// Política de segurança de conteúdo: só carrega código e dados das origens listadas.
+// Com anúncios ligados (CONFIG.anuncios.cliente), libera também os domínios de publicidade do Google.
+const comAnuncios = !!(CC.CONFIG.anuncios && CC.CONFIG.anuncios.cliente);
+const leadOrigem = (() => { try { return new URL(CC.CONFIG.leadEndpoint).origin; } catch { return ''; } })();
+const GOOGLE_ADS = 'https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.gstatic.com https://*.adtrafficquality.google';
+const CSP = [
+  "default-src 'self'",
+  `script-src 'self'${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  `img-src 'self' data:${comAnuncios ? ' https:' : ''}`,
+  `connect-src 'self' https://olinda.bcb.gov.br${leadOrigem ? ' ' + leadOrigem : ''}${comAnuncios ? ' ' + GOOGLE_ADS : ''}`,
+  `frame-src ${comAnuncios ? GOOGLE_ADS : "'none'"}`,
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'"
+].join('; ');
 /* ---------- metadados em todas as páginas + sitemap ---------- */
 const paginas = [
   ...readdirSync(raiz).filter((n) => n.endsWith('.html')),
@@ -207,6 +224,8 @@ for (const p of paginas) {
   const desc = (h.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
   const url = dominio ? `${dominio}/${p === 'index.html' ? '' : p}` : '';
   const bloco = `<!--seo:inicio-->
+<meta http-equiv="Content-Security-Policy" content="${CSP}">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="${url}">\n` : ''}<meta property="og:site_name" content="Financie Imóvel">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:type" content="${p.startsWith('blog/') ? 'article' : 'website'}">

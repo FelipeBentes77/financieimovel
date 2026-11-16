@@ -6,7 +6,13 @@
   var IDX = { tr: 'TR', ipca: 'IPCA', pre: 'taxa fixa' };
 
   var estado = { ajustes: {}, ofertas: [], marcados: null, abertos: {}, ultimo: [] };
-  try { estado.ofertas = JSON.parse(localStorage.getItem('cc_ofertas') || '[]'); } catch (e) { /* sem storage */ }
+  // propostas salvas no navegador: aceita só itens no formato esperado
+  try {
+    var salvas = JSON.parse(localStorage.getItem('cc_ofertas') || '[]');
+    estado.ofertas = (Array.isArray(salvas) ? salvas : []).filter(function (o) {
+      return o && /^p\d{1,16}$/.test(o.id) && typeof o.nome === 'string' && o.nome.length <= 40 && typeof o.aa === 'number' && o.aa > 0 && o.aa < 40;
+    }).slice(0, 20);
+  } catch (e) { /* sem storage */ }
 
   var radio = function (n) { return document.querySelector('input[name=' + n + ']:checked').value; };
   var marcar = function (n, v) { var el = document.querySelector('input[name=' + n + '][value="' + v + '"]'); if (el) el.checked = true; };
@@ -278,7 +284,7 @@
     var msg = $('leadMsg');
     msg.hidden = false; msg.className = 'aviso';
     if (!this.checkValidity()) { msg.textContent = 'Preencha nome, WhatsApp, e-mail e marque a autorização.'; return; }
-    if (!CC.CONFIG.leadEndpoint) { msg.textContent = 'O envio de pedidos ainda não está ativo neste site. Seus dados não foram enviados.'; return; }
+    if (!/^https:\/\//.test(CC.CONFIG.leadEndpoint)) { msg.textContent = 'O envio de pedidos ainda não está ativo neste site. Seus dados não foram enviados.'; return; }
     var c = leadAtual.c;
     fetch(CC.CONFIG.leadEndpoint, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },

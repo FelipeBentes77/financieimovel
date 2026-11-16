@@ -6,6 +6,8 @@
 <title>Ebook Do Sonho às Chaves: financiar, comprar e reformar seu imóvel | Financie Imóvel</title>
 <meta name="description" content="Guia passo a passo para planejar a compra da casa própria: organizar as finanças, conseguir o melhor crédito imobiliário, comprar com segurança e reformar sem estourar o orçamento.">
 <!--seo:inicio-->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://olinda.bcb.gov.br; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://www.financieimovel.com.br/ebook.html">
 <meta property="og:url" content="https://www.financieimovel.com.br/ebook.html">
 <meta property="og:site_name" content="Financie Imóvel">
@@ -106,18 +108,6 @@
 <script src="dados/links-bancos.js"></script>
 <script src="dados/paginas-bancos.js"></script>
 <script src="js/comum.js"></script>
-<script>
-  CC.montarPagina('ebook'); CC.iniciarDados();
-  (function () {
-    var p = CC.CONFIG.produto, botao = CC.$('comprar');
-    if (p.preco) { CC.$('preco').hidden = false; CC.$('preco').innerHTML = 'Por <b>' + CC.f.esc(p.preco) + '</b>'; }
-    if (p.checkout) { botao.href = p.checkout; botao.rel = 'noopener'; }
-    else {
-      CC.$('notaLancamento').hidden = false;
-      botao.firstChild.textContent = 'Lançamento em breve';
-      botao.removeAttribute('href'); botao.setAttribute('aria-disabled', 'true'); botao.style.opacity = '.75'; botao.style.cursor = 'default';
-    }
-  })();
-</script>
+<script src="js/ebook.js"></script>
 </body>
 </html>

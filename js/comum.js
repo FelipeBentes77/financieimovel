@@ -74,7 +74,7 @@ window.CC = (function () {
     dados.mes = snap.mes;
     var p = snap.mes.split('-');
     dados.rotulo = MESES[+p[1] - 1] + ' de ' + p[0];
-    dados.taxas = snap.linhas.map(function (l) {
+    dados.taxas = snap.linhas.filter(function (l) { return /^\d{8}$/.test(String(l.cnpj8)) && Number(l.TaxaJurosAoAno) > 0; }).map(function (l) {
       var b = BANCOS[l.cnpj8] || {};
       var nome = b.nome || l.InstituicaoFinanceira.replace(/^BCO\b/, 'Banco').replace(/ S\.?A\.?$/, '');
       return {
@@ -82,7 +82,7 @@ window.CC = (function () {
         coop: !!b.coop, regiao: b.regiao || '',
         linha: /reguladas/.test(l.Modalidade) ? 'reg' : 'mer',
         idx: /Prefixado/.test(l.Modalidade) ? 'pre' : /IPCA/.test(l.Modalidade) ? 'ipca' : 'tr',
-        aa: l.TaxaJurosAoAno
+        aa: Number(l.TaxaJurosAoAno) || 0
       };
     });
     [].forEach.call(document.querySelectorAll('[data-mes]'), function (el) { el.textContent = dados.rotulo; });
@@ -91,8 +91,8 @@ window.CC = (function () {
   function iniciarDados(aoAtualizar) {
     if (window.TAXAS_SNAPSHOT) carregar(window.TAXAS_SNAPSHOT);
     fetch(CONFIG.urlBCB).then(function (r) { return r.json(); }).then(function (j) {
-      var mes = j.value.map(function (l) { return l.anoMes; }).sort().pop();
-      if (!mes || mes <= dados.mes) return;
+      var mes = j.value.map(function (l) { return String(l.anoMes); }).sort().pop();
+      if (!/^\d{4}-\d{2}$/.test(mes || '') || mes <= dados.mes) return;
       carregar({ mes: mes, linhas: j.value.filter(function (l) { return l.anoMes === mes; }) });
       if (aoAtualizar) aoAtualizar();
     }).catch(function () { /* fica com o snapshot */ });
@@ -234,7 +234,8 @@ window.CC = (function () {
 
   /* ---------- link para o site do banco ---------- */
   function linkBanco(id) {
-    return CONFIG.linksParceiros[id] || (window.LINKS_BANCOS || {})[id] || '';
+    var url = CONFIG.linksParceiros[id] || (window.LINKS_BANCOS || {})[id] || '';
+    return /^https:\/\//.test(url) ? url : '';
   }
 
   return {
