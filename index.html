@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Financie Imóvel | Compare financiamento imobiliário entre os bancos</title>
+<meta name="description" content="Compare as taxas de financiamento imobiliário de Caixa, Itaú, Bradesco, Santander, Banco do Brasil e outros bancos. Veja parcela, custo total e quanto você pode financiar.">
+<!--seo:inicio-->
+<link rel="canonical" href="https://www.financieimovel.com.br/">
+<meta property="og:url" content="https://www.financieimovel.com.br/">
+<meta property="og:site_name" content="Financie Imóvel">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Financie Imóvel | Compare financiamento imobiliário entre os bancos">
+<meta property="og:description" content="Compare as taxas de financiamento imobiliário de Caixa, Itaú, Bradesco, Santander, Banco do Brasil e outros bancos. Veja parcela, custo total e quanto você pode financiar.">
+<meta name="twitter:card" content="summary">
+<!--seo:fim-->
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header id="cabecalho"></header>
+
+<main>
+<section class="hero">
+  <div class="container hero-grade">
+    <div>
+      <h1>Financiamento imobiliário: compare os bancos e pague <mark>menos juros</mark></h1>
+      <p class="sub">Veja lado a lado a parcela e o custo total do seu financiamento em cada banco, com as taxas que eles praticaram em <span data-mes></span>.</p>
+      <ul class="vantagens">
+        <li>Taxas oficiais publicadas pelo Banco Central</li>
+        <li>Gratuito e sem cadastro para simular</li>
+        <li>SAC ou Price, com TR, IPCA ou taxa fixa</li>
+      </ul>
+    </div>
+
+    <form class="busca" id="busca" action="comparar.html" method="get" autocomplete="off">
+      <h2>Comece sua comparação</h2>
+      <label class="campo">
+        <span>Valor do imóvel</span>
+        <div class="moeda"><i>R$</i><input id="imovel" inputmode="numeric" value="500.000"></div>
+      </label>
+      <div class="dupla">
+        <label class="campo">
+          <span>Entrada</span>
+          <div class="moeda"><i>R$</i><input id="entrada" inputmode="numeric" value="100.000"></div>
+        </label>
+        <label class="campo">
+          <span>% do imóvel</span>
+          <div class="moeda suf"><input id="entradaPct" inputmode="decimal" value="20"><i>%</i></div>
+        </label>
+      </div>
+      <label class="campo">
+        <span>Prazo: <b id="prazoTxt">30 anos</b></span>
+        <input type="range" id="prazo" min="5" max="35" step="1" value="30">
+      </label>
+      <button class="btn btn-acao btn-g btn-bloco" type="submit">Comparar bancos<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+      <p class="nota centro" style="margin:12px 0 0">A partir de <b id="melhorParcela">—</b> por mês na primeira parcela.</p>
+    </form>
+  </div>
+
+  <div class="faixa-bancos">
+    <div class="container" id="faixaBancos"><p>Comparamos as taxas de</p></div>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="secao-topo">
+      <h2>Menores taxas de <span data-mes></span></h2>
+      <p>Taxa média de juros que cada instituição cobrou nos contratos fechados no mês, com correção pela TR. Fonte: Banco Central.</p>
+    </div>
+    <div class="tabelas">
+      <div class="tabela-taxas">
+        <h3 id="tituloReg">Linhas reguladas (SFH)</h3>
+        <table><thead><tr><th>Instituição</th><th>Taxa ao ano</th><th>1ª parcela*</th></tr></thead><tbody id="tabReg"></tbody></table>
+      </div>
+      <div class="tabela-taxas">
+        <h3 id="tituloMer">Linhas de mercado (SFI)</h3>
+        <table><thead><tr><th>Instituição</th><th>Taxa ao ano</th><th>1ª parcela*</th></tr></thead><tbody id="tabMer"></tbody></table>
+      </div>
+    </div>
+    <p class="nota centro" style="margin-top:16px">*Exemplo: R$ 400.000 financiados em 30 anos, tabela SAC, imóvel de R$ 500.000, com seguros estimados.</p>
+    <p class="tabela-rodape"><a class="btn btn-claro" href="comparar.html">Ver todos os bancos<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></p>
+  </div>
+</section>
+
+<section class="secao escura" id="como-funciona">
+  <div class="container">
+    <div class="secao-topo"><h2>Como funciona</h2><p>Três passos, sem cadastro e sem consulta ao seu CPF.</p></div>
+    <div class="passos">
+      <div class="passo"><h3>Conte sobre o imóvel</h3><p>Informe o valor, quanto você tem de entrada e em quantos anos quer pagar.</p></div>
+      <div class="passo"><h3>Compare os bancos</h3><p>Mostramos parcela, juros e custo total em cada instituição, do mais barato ao mais caro.</p></div>
+      <div class="passo"><h3>Leve para a negociação</h3><p>Use os números como referência ao pedir a proposta, ou adicione a taxa que o banco ofereceu e veja onde ela fica.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="secao lav">
+  <div class="container">
+    <div class="secao-topo"><h2>Ferramentas para decidir</h2></div>
+    <div class="grade-3">
+      <a class="bloco" href="comparar.html">
+        <div class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+        <h3>Comparador de bancos</h3><p>Ranking completo para o seu cenário, com parcela, custo efetivo e evolução ano a ano.</p><span class="ir">Comparar →</span>
+      </a>
+      <a class="bloco" href="quanto-posso-financiar.html">
+        <div class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.5-1.4-2.8-1.4-1.700 0-2.900.9-2.900 2.100 0 2.900 5.900 1.300 5.900 4.200 0 1.200-1.300 2.100-3 2.100-1.400 0-2.500-.600-3-1.500M12 6v1.800M12 16.200V18"/></svg></div>
+        <h3>Quanto posso financiar</h3><p>Descubra o valor máximo de imóvel que cabe na sua renda antes de sair procurando.</p><span class="ir">Calcular →</span>
+      </a>
+      <a class="bloco" href="guias.html#sac-price">
+        <div class="icone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6c6 0 6 12 18 12M3 12h18"/></svg></div>
+        <h3>SAC ou Price?</h3><p>Entenda a diferença entre parcela que cai e parcela fixa, e quanto cada uma custa no fim.</p><span class="ir">Ler o guia →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="secao">
+  <div class="container">
+    <div class="secao-topo"><h2>Guias de crédito imobiliário</h2><p>O que vale saber antes de assinar um contrato de até 35 anos.</p></div>
+    <div class="grade-3">
+      <a class="bloco" href="guias.html#indexadores"><span class="etiqueta">Taxas</span><h3>TR, IPCA ou taxa fixa: qual correção escolher</h3><p>Como cada indexador mexe na parcela e no saldo devedor ao longo do contrato.</p><span class="ir">Ler mais →</span></a>
+      <a class="bloco" href="guias.html#custos"><span class="etiqueta">Custos</span><h3>Quanto custa financiar além da parcela</h3><p>ITBI, cartório, avaliação e seguros: os gastos que ficam fora da simulação do banco.</p><span class="ir">Ler mais →</span></a>
+      <a class="bloco" href="blog.html"><span class="etiqueta">Blog</span><h3>Quanto preciso ganhar para financiar um imóvel</h3><p>Tabela de renda mínima atualizada todo mês, e outros artigos sobre compra e reforma.</p><span class="ir">Ir para o blog →</span></a>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div class="anuncio" data-formato="faixa" data-bloco="home"></div></div>
+
+<section class="secao lav" id="duvidas">
+  <div class="container">
+    <div class="secao-topo"><h2>Dúvidas frequentes</h2></div>
+    <div class="duvidas">
+      <details><summary>De onde vêm as taxas do comparador?</summary><p>Dos dados abertos do Banco Central. Todo mês as instituições informam a taxa média de juros dos contratos que fecharam, por tipo de financiamento. É a taxa que o banco praticou de fato, e não a taxa "a partir de" da propaganda.</p></details>
+      <details><summary>Vou conseguir exatamente a taxa mostrada?</summary><p>Não necessariamente. A taxa final depende do seu perfil de crédito, do relacionamento com o banco, do valor da entrada e do imóvel. Use o ranking como referência de quem costuma cobrar menos e peça propostas a pelo menos três instituições.</p></details>
+      <details><summary>Por que a taxa da Caixa parece tão mais baixa?</summary><p>A média publicada reúne todos os contratos regulados do banco. Como a Caixa é a principal operadora de programas habitacionais com juros reduzidos, a média dela tende a ficar abaixo da taxa cobrada de quem está fora desses programas. Para quem não se enquadra nesses programas, a taxa tende a ser maior que a média publicada.</p></details>
+      <details><summary>Qual a entrada mínima?</summary><p>A maior parte dos bancos financia até 80% do valor de avaliação do imóvel, o que pede 20% de entrada. O percentual varia conforme o banco, a linha e o sistema de amortização. O saldo do FGTS pode compor a entrada nas linhas do SFH.</p></details>
+      <details><summary>Quanto da minha renda a parcela pode comprometer?</summary><p>Os bancos costumam limitar a parcela a cerca de 30% da renda familiar bruta. Na ferramenta "Quanto posso financiar" você calcula o valor máximo de imóvel com base nesse limite.</p></details>
+      <details><summary>O Financie Imóvel é um banco?</summary><p>Não. Somos um comparador independente: não concedemos crédito, não aprovamos financiamento e não cobramos nada de quem simula.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="container"><div data-promo="ebook"></div></div>
+
+<section class="chamada">
+  <div class="container">
+    <h2>Pronto para ver quanto você economiza?</h2>
+    <a class="btn btn-g" href="comparar.html">Comparar bancos agora<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  </div>
+</section>
+</main>
+
+<footer id="rodape"></footer>
+
+<script src="dados/taxas.js"></script>
+<script src="dados/logos-bancos.js"></script>
+<script src="dados/links-bancos.js"></script>
+<script src="dados/paginas-bancos.js"></script>
+<script src="js/comum.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>

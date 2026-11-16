@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto posso financiar? Calculadora por renda | Financie Imóvel</title>
+<meta name="description" content="Calcule o valor máximo de imóvel e de financiamento que cabe na sua renda familiar, com as taxas atuais dos bancos.">
+<!--seo:inicio-->
+<link rel="canonical" href="https://www.financieimovel.com.br/quanto-posso-financiar.html">
+<meta property="og:url" content="https://www.financieimovel.com.br/quanto-posso-financiar.html">
+<meta property="og:site_name" content="Financie Imóvel">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Quanto posso financiar? Calculadora por renda | Financie Imóvel">
+<meta property="og:description" content="Calcule o valor máximo de imóvel e de financiamento que cabe na sua renda familiar, com as taxas atuais dos bancos.">
+<meta name="twitter:card" content="summary">
+<!--seo:fim-->
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header id="cabecalho"></header>
+
+<main>
+<section class="topo-pag">
+  <div class="container">
+    <p class="migalhas"><a href="index.html">Início</a> › Quanto posso financiar</p>
+    <h1>Quanto posso financiar?</h1>
+    <p>Descubra o valor máximo de imóvel que cabe na sua renda, antes de visitar o primeiro apartamento.</p>
+  </div>
+</section>
+
+<div class="container calc">
+  <form class="caixa" id="form" autocomplete="off" novalidate>
+    <label class="campo"><span>Renda familiar bruta mensal</span><div class="moeda"><i>R$</i><input id="renda" inputmode="numeric" value="12.000"></div></label>
+    <label class="campo"><span>Quanto você tem para a entrada <em>(inclui FGTS)</em></span><div class="moeda"><i>R$</i><input id="entrada" inputmode="numeric" value="100.000"></div></label>
+    <label class="campo"><span>Prazo: <b id="prazoTxt">30 anos</b></span><input type="range" id="prazo" min="5" max="35" step="1" value="30"></label>
+    <fieldset class="campo"><legend>Sistema de amortização</legend>
+      <div class="seg">
+        <label><input type="radio" name="sistema" value="sac" checked><span>SAC<small>parcela cai</small></span></label>
+        <label><input type="radio" name="sistema" value="price"><span>Price<small>parcela fixa</small></span></label>
+      </div>
+    </fieldset>
+    <label class="campo"><span>Taxa de juros considerada</span>
+      <select id="taxaRef">
+        <option value="mediana">Taxa mediana dos bancos</option>
+        <option value="menor">Menor taxa do mês</option>
+        <option value="outra">Informar outra taxa</option>
+      </select>
+    </label>
+    <label class="campo" id="campoTaxa" hidden><span>Taxa (% ao ano)</span><input class="simples" id="taxaOutra" inputmode="decimal" value="11"></label>
+    <label class="campo"><span>Parcela máxima sobre a renda: <b id="compTxt">30%</b></span><input type="range" id="comp" min="20" max="35" step="1" value="30"></label>
+    <p class="nota">Considera linhas reguladas (SFH) com correção pela TR e seguros estimados. Os bancos costumam limitar a parcela a cerca de 30% da renda.</p>
+  </form>
+
+  <section>
+    <div class="resultado-g">
+      <div class="rot">Você pode buscar imóveis de até</div>
+      <div class="valor" id="imovelMax">—</div>
+      <div class="trio">
+        <div><span>Financiamento máximo</span><b id="finMax">—</b></div>
+        <div><span>Maior parcela</span><b id="parcelaMax">—</b></div>
+        <div><span>Taxa usada</span><b id="taxaUsada">—</b></div>
+      </div>
+      <a class="btn btn-acao btn-g" id="irComparar" href="comparar.html">Comparar bancos para este valor<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+    </div>
+    <p class="aviso" id="avisoLimite" hidden style="margin-top:16px"></p>
+
+    <div class="caixa" style="margin-top:22px">
+      <h3>Como chegamos a esse número</h3>
+      <p class="muted" id="explica"></p>
+      <h3 style="margin-top:1.2em">Reserve dinheiro para os custos de compra</h3>
+      <p class="muted" style="margin:0">ITBI, escritura e registro costumam somar de 4% a 5% do valor do imóvel e não entram no financiamento na maioria dos bancos. Para um imóvel de <b id="imovelRef">—</b>, isso fica em torno de <b id="custosRef">—</b>. <a href="guias.html#custos">Entenda os custos</a>.</p>
+    </div>
+    <div class="anuncio" data-formato="faixa" data-bloco="calculadora"></div>
+    <div data-promo="ebook"></div>
+  </section>
+</div>
+</main>
+
+<footer id="rodape"></footer>
+
+<script src="dados/taxas.js"></script>
+<script src="dados/logos-bancos.js"></script>
+<script src="dados/links-bancos.js"></script>
+<script src="dados/paginas-bancos.js"></script>
+<script src="js/comum.js"></script>
+<script src="js/financiar.js"></script>
+</body>
+</html>

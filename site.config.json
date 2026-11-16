@@ -1,0 +1,4 @@
+{
+  "dominio": "https://www.financieimovel.com.br",
+  "_ajuda": "Endereço final do site, sem barra no fim. Depois de alterar, rode: node gerar-seo.mjs"
+}

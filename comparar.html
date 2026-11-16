@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparar financiamento imobiliário | Financie Imóvel</title>
+<meta name="description" content="Ranking dos bancos para o seu financiamento imobiliário: parcela, taxa, custo efetivo e total pago, com dados do Banco Central.">
+<!--seo:inicio-->
+<link rel="canonical" href="https://www.financieimovel.com.br/comparar.html">
+<meta property="og:url" content="https://www.financieimovel.com.br/comparar.html">
+<meta property="og:site_name" content="Financie Imóvel">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Comparar financiamento imobiliário | Financie Imóvel">
+<meta property="og:description" content="Ranking dos bancos para o seu financiamento imobiliário: parcela, taxa, custo efetivo e total pago, com dados do Banco Central.">
+<meta name="twitter:card" content="summary">
+<!--seo:fim-->
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header id="cabecalho"></header>
+
+<main>
+<section class="topo-pag">
+  <div class="container">
+    <p class="migalhas"><a href="index.html">Início</a> › Comparar bancos</p>
+    <h1>Compare financiamentos imobiliários</h1>
+    <p>Taxas praticadas em <span data-mes></span>, segundo o Banco Central. Ajuste o cenário e o ranking se atualiza na hora.</p>
+  </div>
+</section>
+
+<div class="container comp">
+  <aside>
+    <form class="filtros" id="form" autocomplete="off" novalidate>
+      <h2>Seu financiamento</h2>
+      <label class="campo"><span>Valor do imóvel</span><div class="moeda"><i>R$</i><input id="imovel" inputmode="numeric"></div></label>
+      <div class="dupla">
+        <label class="campo"><span>Entrada</span><div class="moeda"><i>R$</i><input id="entrada" inputmode="numeric"></div></label>
+        <label class="campo"><span>%</span><div class="moeda suf"><input id="entradaPct" inputmode="decimal"><i>%</i></div></label>
+      </div>
+      <p class="aviso" id="aviso-entrada" hidden></p>
+      <label class="campo"><span>Prazo: <b id="prazoTxt"></b></span><input type="range" id="prazo" min="5" max="35" step="1"></label>
+      <label class="campo"><span>Renda familiar mensal <em>(opcional)</em></span><div class="moeda"><i>R$</i><input id="renda" inputmode="numeric" placeholder="checa se a parcela cabe"></div></label>
+
+      <fieldset class="campo"><legend>Sistema de amortização</legend>
+        <div class="seg">
+          <label><input type="radio" name="sistema" value="sac"><span>SAC<small>parcela cai</small></span></label>
+          <label><input type="radio" name="sistema" value="price"><span>Price<small>parcela fixa</small></span></label>
+        </div>
+      </fieldset>
+      <fieldset class="campo"><legend>Correção do saldo</legend>
+        <div class="seg tres">
+          <label><input type="radio" name="indexador" value="tr"><span>TR</span></label>
+          <label><input type="radio" name="indexador" value="ipca"><span>IPCA</span></label>
+          <label><input type="radio" name="indexador" value="pre"><span>Fixa</span></label>
+        </div>
+      </fieldset>
+      <fieldset class="campo"><legend>Tipo de linha</legend>
+        <div class="seg">
+          <label><input type="radio" name="linha" value="reg"><span>SFH<small>reguladas</small></span></label>
+          <label><input type="radio" name="linha" value="mer"><span>SFI<small>de mercado</small></span></label>
+        </div>
+      </fieldset>
+      <p class="aviso" id="aviso-linha" hidden></p>
+      <label class="check campo"><input type="checkbox" id="soNacionais"> Só bancos de atuação nacional</label>
+
+      <details>
+        <summary>Premissas do cálculo</summary>
+        <div class="dupla igual">
+          <label class="campo"><span>TR (% a.a.)</span><input class="simples" id="trAA" inputmode="decimal"></label>
+          <label class="campo"><span>IPCA (% a.a.)</span><input class="simples" id="ipcaAA" inputmode="decimal"></label>
+        </div>
+        <div class="dupla igual">
+          <label class="campo"><span>MIP (% a.m.)</span><input class="simples" id="mip" inputmode="decimal"></label>
+          <label class="campo"><span>DFI (% a.m.)</span><input class="simples" id="dfi" inputmode="decimal"></label>
+        </div>
+        <label class="campo"><span>Tarifa de administração (R$/mês)</span><input class="simples" id="adm" inputmode="decimal"></label>
+        <p class="nota">Seguros e tarifa variam por banco, idade e imóvel. Usamos a mesma estimativa para todos, para a comparação ser justa.</p>
+      </details>
+    </form>
+  </aside>
+
+  <section>
+    <div class="resumo-topo">
+      <p id="resumo"></p>
+      <button class="link" type="button" id="copiar">Copiar link desta simulação</button>
+    </div>
+
+    <div class="pilulas" role="group" aria-label="Percentual de entrada">
+      <span class="muted">Entrada de</span>
+      <button type="button" data-pct="20">20%</button>
+      <button type="button" data-pct="30">30%</button>
+      <button type="button" data-pct="40">40%</button>
+      <button type="button" data-pct="50">50%</button>
+    </div>
+
+    <div class="anuncio" data-formato="faixa" data-bloco="comparador_topo"></div>
+
+    <div class="barra">
+      <h2 id="contagem"></h2>
+      <div class="acoes">
+        <label>Ordenar por
+          <select id="ordem">
+            <option value="total">Menor custo total</option>
+            <option value="primeira">Menor 1ª parcela</option>
+            <option value="taxa">Menor taxa</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div id="lista"></div>
+    <p class="vazio" id="vazio" hidden></p>
+
+    <form class="caixa add" id="formOferta">
+      <div><h3>Recebeu uma proposta?</h3><p class="muted">Inclua a taxa oferecida e veja onde ela fica no ranking.</p></div>
+      <input class="simples" id="ofertaNome" placeholder="Banco ou correspondente" required maxlength="40">
+      <div class="moeda suf"><input id="ofertaTaxa" inputmode="decimal" placeholder="Taxa" required><i>% a.a.</i></div>
+      <button class="btn" type="submit">Adicionar<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></button>
+    </form>
+
+    <div class="anuncio" data-formato="faixa" data-bloco="comparador"></div>
+
+    <div class="caixa">
+      <h3>Evolução da parcela</h3>
+      <p class="muted" style="font-size:.92rem">Marque "Comparar no gráfico" em até 4 bancos. Parcela mensal com seguros, ao longo do contrato.</p>
+      <div id="legenda" class="legenda"></div>
+      <div id="grafico"></div>
+    </div>
+
+    <p class="nota" style="margin-top:22px">As taxas são médias dos contratos fechados por cada instituição no mês e podem diferir da oferta feita a você. O custo efetivo estimado considera juros, correção projetada, seguros e tarifa de administração, e não inclui ITBI, cartório ou avaliação. <a href="guias.html#metodologia">Veja a metodologia</a>.</p>
+    <div data-promo="ebook"></div>
+  </section>
+</div>
+</main>
+
+<dialog id="dlgLead">
+  <form class="dlg" id="formLead" novalidate>
+    <button class="fechar" type="button" aria-label="Fechar" id="fecharLead">×</button>
+    <h3 id="leadTitulo">Receber esta proposta</h3>
+    <p class="resumo" id="leadResumo"></p>
+    <label class="campo"><span>Nome</span><input class="simples" id="leadNome" required autocomplete="name"></label>
+    <label class="campo"><span>WhatsApp</span><input class="simples" id="leadFone" required inputmode="tel" autocomplete="tel" placeholder="(11) 90000-0000"></label>
+    <label class="campo"><span>E-mail</span><input class="simples" id="leadEmail" type="email" required autocomplete="email"></label>
+    <label class="check campo"><input type="checkbox" id="leadOk" required> Autorizo o contato sobre esta simulação.</label>
+    <button class="btn btn-acao btn-bloco" type="submit">Enviar pedido<span class="seta" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8h9M8.5 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <p class="aviso" id="leadMsg" hidden style="margin:14px 0 0"></p>
+  </form>
+</dialog>
+
+<footer id="rodape"></footer>
+
+<script src="dados/taxas.js"></script>
+<script src="dados/logos-bancos.js"></script>
+<script src="dados/links-bancos.js"></script>
+<script src="dados/paginas-bancos.js"></script>
+<script src="js/comum.js"></script>
+<script src="js/comparar.js"></script>
+</body>
+</html>
