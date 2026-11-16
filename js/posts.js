@@ -6,6 +6,7 @@ window.POSTS = [
   "resumo": "O que o banco analisa antes de liberar o crédito e o que fazer nos meses anteriores para chegar com o perfil mais forte.",
   "categoria": "Crédito",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -15,6 +16,7 @@ window.POSTS = [
   "resumo": "Quem pode usar, em que tipo de imóvel, e as três formas de aproveitar o saldo: entrada, amortização e parcelas.",
   "categoria": "Planejamento",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -24,6 +26,7 @@ window.POSTS = [
   "resumo": "O que se paga além da entrada: imposto, registro, avaliação do banco e mudança, e quanto reservar para cada um.",
   "categoria": "Planejamento",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -33,6 +36,7 @@ window.POSTS = [
   "resumo": "Como levar a dívida para um banco com juros menores, quanto custa a troca e quando ela compensa.",
   "categoria": "Quem já financia",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#2f54eb"
  },
@@ -42,6 +46,7 @@ window.POSTS = [
   "resumo": "Como cada sistema monta a parcela, quanto se paga de juros em cada um e para quem cada opção faz sentido.",
   "categoria": "Crédito",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -51,6 +56,7 @@ window.POSTS = [
   "resumo": "O que muda na parcela e no risco do contrato em cada tipo de correção do financiamento imobiliário.",
   "categoria": "Crédito",
   "data": "16 nov 2026",
+  "iso": "2026-11-16",
   "minutos": 5,
   "cor": "#ffd23f"
  },
@@ -60,6 +66,7 @@ window.POSTS = [
   "resumo": "O que cada escolha faz com os juros e como usar o FGTS para antecipar a dívida.",
   "categoria": "Quem já financia",
   "data": "15 nov 2026",
+  "iso": "2026-11-15",
   "minutos": 5,
   "cor": "#2f54eb"
  },
@@ -69,6 +76,7 @@ window.POSTS = [
   "resumo": "As etapas do processo, os documentos pedidos e onde costuma haver atraso.",
   "categoria": "Crédito",
   "data": "15 nov 2026",
+  "iso": "2026-11-15",
   "minutos": 6,
   "cor": "#ffd23f"
  },
@@ -78,6 +86,7 @@ window.POSTS = [
   "resumo": "A renda mínima para imóveis de R$ 200 mil a R$ 1 milhão, calculada com as taxas atuais dos bancos.",
   "categoria": "Planejamento",
   "data": "15 nov 2026",
+  "iso": "2026-11-15",
   "minutos": 5,
   "cor": "#ff5c39"
  },
@@ -87,6 +96,7 @@ window.POSTS = [
   "resumo": "Escopo, orçamentos, ordem das etapas, regras do condomínio e formas de pagar a obra.",
   "categoria": "Reforma",
   "data": "15 nov 2026",
+  "iso": "2026-11-15",
   "minutos": 6,
   "cor": "#0f8a5f"
  }

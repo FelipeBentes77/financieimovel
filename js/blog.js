@@ -2,9 +2,15 @@
 (function () {
   'use strict';
   var CC = window.CC, f = CC.f, $ = CC.$, P = CC.PREMISSAS, R = CC.R, POSTS = window.POSTS || [];
-  var cartao = function (p) {
-    return '<a class="cartao-post" href="' + R + 'blog/' + p.slug + '.html"><div class="capa" style="--cor:' + p.cor + '"><span>' + f.esc(p.categoria) + '</span></div>' +
-      '<div class="txt"><h3>' + f.esc(p.titulo) + '</h3><p>' + f.esc(p.resumo) + '</p><small>' + p.data + ' · ' + p.minutos + ' min de leitura</small></div></a>';
+  var MESES = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
+  var dataCurta = function (iso) { var p = String(iso).split('-'); return p.length === 3 ? (+p[2]) + ' de ' + MESES[+p[1] - 1] + ' de ' + p[0] : String(iso); };
+  var slugOk = function (v) { return /^[a-z0-9-]+$/.test(v) ? v : ''; };
+  var cartao = function (p, i) {
+    var destaque = i === 0, g = slugOk(p.slug);
+    return '<a class="cartao-post' + (destaque ? ' destaque' : '') + '" href="' + R + 'blog/' + g + '.html"><div class="capa">' +
+      '<img src="' + R + 'assets/blog/' + g + (destaque ? '' : '-p') + '.jpg" alt="" width="' + (destaque ? 1200 : 640) + '" height="' + (destaque ? 675 : 360) + '"' + (destaque ? '' : ' loading="lazy"') + '>' +
+      '<span>' + f.esc(p.categoria) + '</span></div>' +
+      '<div class="txt"><h3>' + f.esc(p.titulo) + '</h3><p>' + f.esc(p.resumo) + '</p><small>' + dataCurta(p.data) + ' · ' + Number(p.minutos) + ' min de leitura</small></div></a>';
   };
 
   // página de lista
@@ -20,8 +26,12 @@
       '<div data-promo="ebook-lateral"></div>';
   }
   if ($('relacionados')) {
-    $('relacionados').innerHTML = '<h3>Continue lendo</h3>' + POSTS.filter(function (p) { return p.slug !== atual; }).slice(0, 3)
-      .map(function (p) { return '<a href="' + R + 'blog/' + p.slug + '.html">' + f.esc(p.titulo) + '</a>'; }).join('');
+    $('relacionados').innerHTML = '<h3>Continue lendo</h3><div class="rel-lista">' + POSTS.filter(function (p) { return p.slug !== atual; }).slice(0, 3)
+      .map(function (p) {
+        var g = slugOk(p.slug);
+        return '<a href="' + R + 'blog/' + g + '.html"><img src="' + R + 'assets/blog/' + g + '-p.jpg" alt="" width="640" height="360" loading="lazy">' +
+          '<span><small>' + f.esc(p.categoria) + '</small>' + f.esc(p.titulo) + '</span></a>';
+      }).join('') + '</div>';
   }
 
   // tabela "renda necessária por valor de imóvel", sempre com a taxa mediana do mês

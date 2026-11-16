@@ -58,6 +58,7 @@ for (const p of posts) {
 </section>
 <div class="container post">
   <article class="artigo">
+    <figure class="capa-artigo"><img src="../assets/blog/${p.slug}.jpg" alt="${esc(p.titulo)}" width="1200" height="675"></figure>
 ${corpo}
     <div class="anuncio" data-formato="faixa" data-bloco="blog_fim"></div>
     <div data-promo="ebook"></div>
@@ -79,7 +80,7 @@ ${corpo}
   writeFileSync(join(destino, p.slug + '.html'), html, 'utf8');
 }
 
-const lista = posts.map(({ slug, titulo, resumo, categoria, data, minutos, cor }) => ({ slug, titulo, resumo, categoria, data: dataBr(data), minutos, cor: cor || '#ff5c39' }));
+const lista = posts.map(({ slug, titulo, resumo, categoria, data, minutos, cor }) => ({ slug, titulo, resumo, categoria, data: dataBr(data), iso: data, minutos, cor: cor || '#ff5c39' }));
 writeFileSync(join(raiz, 'js', 'posts.js'),
   '/* Gerado por gerar-blog.mjs. Não edite à mão: altere os textos em conteudo/blog/ e rode o script. */\nwindow.POSTS = ' + JSON.stringify(lista, null, 1) + ';\n', 'utf8');
 console.log(`OK: ${posts.length} artigos gerados em blog/ e lista atualizada em js/posts.js`);

@@ -323,9 +323,10 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
 .blog-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding: 40px 0 20px; }
 .cartao-post { display: flex; flex-direction: column; border: 1px solid var(--linha); border-radius: 10px; overflow: hidden; text-decoration: none; background: #fff; transition: border-color .15s, box-shadow .15s; }
 .cartao-post:hover { border-color: var(--marinho); box-shadow: 0 8px 24px rgba(16, 26, 74, .1); }
-.cartao-post .capa { height: 120px; background: var(--marinho); position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 14px 18px; }
-.cartao-post .capa::after { content: ""; position: absolute; right: -40px; top: -60px; width: 190px; height: 190px; border-radius: 50%; background: var(--cor, var(--coral)); opacity: .9; }
-.cartao-post .capa span { position: relative; z-index: 1; color: #fff; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.cartao-post .capa { position: relative; aspect-ratio: 16 / 9; background: var(--lavanda); overflow: hidden; }
+.cartao-post .capa img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+.cartao-post:hover .capa img { transform: scale(1.04); }
+.cartao-post .capa span { position: absolute; left: 14px; top: 14px; background: var(--coral); color: #fff; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; padding: 5px 10px; border-radius: 3px; }
 .cartao-post .txt { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
 .cartao-post h3 { font-size: 1.12rem; line-height: 1.25; }
 .cartao-post p { color: var(--tinta-2); font-size: .93rem; flex: 1; }
@@ -462,3 +463,26 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
 .rod-link { display: block; background: none; border: 0; padding: 4px 0; margin: 0; font: inherit; color: inherit; cursor: pointer; text-align: left; }
 .rod-link:hover { color: #fff; text-decoration: underline; }
 @media (max-width: 640px) { .aviso-cookies { flex-direction: column; align-items: stretch; } .aviso-cookies-botoes .btn { flex: 1; justify-content: center; } }
+
+/* blog com cara de portal de notícias: manchete em destaque e fotos */
+.cartao-post small { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; margin-top: 6px; }
+.cartao-post h3 { margin-bottom: 6px; }
+.cartao-post.destaque { grid-column: 1 / -1; flex-direction: row; }
+.cartao-post.destaque .capa { flex: 1.35; aspect-ratio: auto; min-height: 340px; }
+.cartao-post.destaque .txt { flex: 1; padding: 34px 36px; justify-content: center; }
+.cartao-post.destaque h3 { font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.12; letter-spacing: -.02em; }
+.cartao-post.destaque p { flex: 0; font-size: 1.05rem; margin: 6px 0 14px; }
+.capa-artigo { margin: 0 0 28px; border-radius: 10px; overflow: hidden; background: var(--lavanda); }
+.capa-artigo img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+.rel-lista { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.relacionados .rel-lista a { display: block; text-decoration: none; padding: 0; border: 0; }
+.rel-lista img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 8px; }
+.rel-lista span { display: block; font-weight: 700; line-height: 1.25; color: var(--tinta); }
+.rel-lista small { display: block; color: var(--coral); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.rel-lista a:hover span { text-decoration: underline; }
+@media (max-width: 900px) {
+  .cartao-post.destaque { flex-direction: column; }
+  .cartao-post.destaque .capa { aspect-ratio: 16 / 9; min-height: 0; flex: none; }
+  .cartao-post.destaque .txt { padding: 20px; }
+  .rel-lista { grid-template-columns: 1fr; }
+}

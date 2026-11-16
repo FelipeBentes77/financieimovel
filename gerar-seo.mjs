@@ -192,7 +192,9 @@ gravar('dados/paginas-bancos.js', '/* Gerado por gerar-seo.mjs */\nwindow.PAGINA
 
 /* ---------- lista de artigos dentro de blog.html ---------- */
 {
-  const cartoes = (W.POSTS || []).map((p) => `<a class="cartao-post" href="blog/${p.slug}.html"><div class="capa" style="--cor:${p.cor}"><span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${p.data} · ${p.minutos} min de leitura</small></div></a>`).join('\n');
+  const MES_CURTO = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
+  const dataCurta = (iso) => { const [a2, m2, d2] = String(iso).split('-'); return `${+d2} de ${MES_CURTO[+m2 - 1]} de ${a2}`; };
+  const cartoes = (W.POSTS || []).map((p, i) => `<a class="cartao-post${i === 0 ? ' destaque' : ''}" href="blog/${p.slug}.html"><div class="capa"><img src="assets/blog/${p.slug}${i === 0 ? '' : '-p'}.jpg" alt="" width="${i === 0 ? 1200 : 640}" height="${i === 0 ? 675 : 360}"${i === 0 ? '' : ' loading="lazy"'}><span>${esc(p.categoria)}</span></div><div class="txt"><h3>${esc(p.titulo)}</h3><p>${esc(p.resumo)}</p><small>${esc(p.data)} · ${p.minutos} min de leitura</small></div></a>`).join('\n');
   const html = ler('blog.html').replace(/<div class="blog-lista" id="blogLista">[\s\S]*?<\/div><!--fim-lista-->|<div class="blog-lista" id="blogLista"><\/div>/,
     `<div class="blog-lista" id="blogLista">\n${cartoes}\n</div><!--fim-lista-->`);
   gravar('blog.html', html);
@@ -254,8 +256,8 @@ for (const p of paginas) {
       if (faq.length) dadosEstruturados.push(ld({ '@type': 'FAQPage', mainEntity: faq.map((m) => ({ '@type': 'Question', name: texto(m[1]), acceptedAnswer: { '@type': 'Answer', text: texto(m[2]) } })) }));
     } else if (postDe[p]) {
       const x = postDe[p];
-      dadosEstruturados.push(ld({ '@type': 'Article', headline: x.titulo, description: x.descricao || x.resumo, datePublished: x.data, dateModified: hojeISO, inLanguage: 'pt-BR',
-        image: `${dominio}/assets/og.png`, mainEntityOfPage: url, author: ORG, publisher: ORG }));
+      dadosEstruturados.push(ld({ '@type': 'Article', headline: x.titulo, description: x.descricao || x.resumo, datePublished: x.iso, dateModified: hojeISO, inLanguage: 'pt-BR',
+        image: `${dominio}/assets/blog/${x.slug}.jpg`, mainEntityOfPage: url, author: ORG, publisher: ORG }));
       dadosEstruturados.push(migalhas([['Início', ''], ['Blog', 'blog.html'], [x.titulo, p]]));
     } else if (p.startsWith('bancos/')) {
       dadosEstruturados.push(ld({ '@type': 'WebPage', name: h1, description: desc, url, dateModified: hojeISO, inLanguage: 'pt-BR', isPartOf: { '@type': 'WebSite', name: 'Financie Imóvel', url: `${dominio}/` } }));
@@ -272,6 +274,7 @@ for (const p of paginas) {
     }
   }
 
+  const imagem = postDe[p] ? `${dominio}/assets/blog/${postDe[p].slug}.jpg` : `${dominio}/assets/og.png`;
   const bloco = `<!--seo:inicio-->
 <meta http-equiv="Content-Security-Policy" content="${CSP}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -282,7 +285,7 @@ ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="
 <meta property="og:type" content="${p.startsWith('blog/') ? 'article' : 'website'}">
 <meta property="og:title" content="${titulo}">
 <meta property="og:description" content="${desc}">
-${dominio ? `<meta property="og:image" content="${dominio}/assets/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:image" content="${dominio}/assets/og.png">\n` : ''}<meta name="twitter:card" content="summary_large_image">
+${dominio ? `<meta property="og:image" content="${imagem}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="${postDe[p] ? 675 : 630}">\n<meta name="twitter:image" content="${imagem}">\n` : ''}<meta name="twitter:card" content="summary_large_image">
 ${dadosEstruturados.join('\n')}${dadosEstruturados.length ? '\n' : ''}<!--seo:fim-->`;
   h = h.replace(/<meta property="og:(type|title|description)"[^>]*>\n/g, '');
   h = /<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/.test(h) ? h.replace(/<!--seo:inicio-->[\s\S]*?<!--seo:fim-->/, () => bloco)
