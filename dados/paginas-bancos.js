@@ -7,6 +7,7 @@ window.PAGINAS_BANCOS = {
  "60746948": "bancos/financiamento-imobiliario-bradesco.html",
  "62232889": "bancos/financiamento-imobiliario-daycoval.html",
  "90400888": "bancos/financiamento-imobiliario-santander.html",
+ "92702067": "bancos/financiamento-imobiliario-banrisul.html",
  "00360305": "bancos/financiamento-imobiliario-caixa.html",
  "00655522": "bancos/financiamento-imobiliario-poupex.html",
  "04913711": "bancos/financiamento-imobiliario-banpara.html",

@@ -1,5 +1,5 @@
 window.TAXAS_SNAPSHOT = {
- "geradoEm": "2026-11-16T23:10:57.448Z",
+ "geradoEm": "2026-11-18T18:38:33.287Z",
  "mes": "2026-10",
  "linhas": [
   {
@@ -46,6 +46,16 @@ window.TAXAS_SNAPSHOT = {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
    "Posicao": 2,
+   "InstituicaoFinanceira": "BCO DO ESTADO DO RS S.A.",
+   "TaxaJurosAoMes": 0.83,
+   "TaxaJurosAoAno": 10.49,
+   "cnpj8": "92702067",
+   "anoMes": "2026-10"
+  },
+  {
+   "Mes": "Out-2026",
+   "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
+   "Posicao": 3,
    "InstituicaoFinanceira": "BCO BANESTES S.A.",
    "TaxaJurosAoMes": 0.85,
    "TaxaJurosAoAno": 10.71,
@@ -55,7 +65,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 3,
+   "Posicao": 4,
    "InstituicaoFinanceira": "BANCO SICOOB S.A.",
    "TaxaJurosAoMes": 0.87,
    "TaxaJurosAoAno": 10.93,
@@ -65,7 +75,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 4,
+   "Posicao": 5,
    "InstituicaoFinanceira": "BCO DO EST. DE SE S.A.",
    "TaxaJurosAoMes": 0.9,
    "TaxaJurosAoAno": 11.35,
@@ -75,7 +85,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 5,
+   "Posicao": 6,
    "InstituicaoFinanceira": "CAIXA ECONOMICA FEDERAL",
    "TaxaJurosAoMes": 0.95,
    "TaxaJurosAoAno": 11.97,
@@ -85,7 +95,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 6,
+   "Posicao": 7,
    "InstituicaoFinanceira": "ITAÚ UNIBANCO S.A.",
    "TaxaJurosAoMes": 0.97,
    "TaxaJurosAoAno": 12.22,
@@ -95,7 +105,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 7,
+   "Posicao": 8,
    "InstituicaoFinanceira": "BANCO COOPERATIVO SICREDI",
    "TaxaJurosAoMes": 0.97,
    "TaxaJurosAoAno": 12.23,
@@ -105,7 +115,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 8,
+   "Posicao": 9,
    "InstituicaoFinanceira": "BCO BRADESCO S.A.",
    "TaxaJurosAoMes": 0.97,
    "TaxaJurosAoAno": 12.27,
@@ -115,7 +125,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 9,
+   "Posicao": 10,
    "InstituicaoFinanceira": "BCO SANTANDER (BRASIL) S.A.",
    "TaxaJurosAoMes": 0.97,
    "TaxaJurosAoAno": 12.32,
@@ -125,7 +135,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 10,
+   "Posicao": 11,
    "InstituicaoFinanceira": "BANCO INTER",
    "TaxaJurosAoMes": 1.02,
    "TaxaJurosAoAno": 12.97,
@@ -135,7 +145,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas de mercado - Pós-fixado referenciado em TR",
-   "Posicao": 11,
+   "Posicao": 12,
    "InstituicaoFinanceira": "BCO DO BRASIL S.A.",
    "TaxaJurosAoMes": 1.13,
    "TaxaJurosAoAno": 14.42,
@@ -276,6 +286,16 @@ window.TAXAS_SNAPSHOT = {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
    "Posicao": 7,
+   "InstituicaoFinanceira": "BCO DO ESTADO DO RS S.A.",
+   "TaxaJurosAoMes": 0.83,
+   "TaxaJurosAoAno": 10.49,
+   "cnpj8": "92702067",
+   "anoMes": "2026-10"
+  },
+  {
+   "Mes": "Out-2026",
+   "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
+   "Posicao": 8,
    "InstituicaoFinanceira": "BCO DO BRASIL S.A.",
    "TaxaJurosAoMes": 0.84,
    "TaxaJurosAoAno": 10.56,
@@ -285,7 +305,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 8,
+   "Posicao": 9,
    "InstituicaoFinanceira": "BCO BANESTES S.A.",
    "TaxaJurosAoMes": 0.84,
    "TaxaJurosAoAno": 10.61,
@@ -295,7 +315,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 9,
+   "Posicao": 10,
    "InstituicaoFinanceira": "BANCO COOPERATIVO SICREDI",
    "TaxaJurosAoMes": 0.85,
    "TaxaJurosAoAno": 10.64,
@@ -305,7 +325,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 10,
+   "Posicao": 11,
    "InstituicaoFinanceira": "BRB - BCO DE BRASILIA S.A.",
    "TaxaJurosAoMes": 0.85,
    "TaxaJurosAoAno": 10.65,
@@ -315,7 +335,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 11,
+   "Posicao": 12,
    "InstituicaoFinanceira": "BCO BRADESCO S.A.",
    "TaxaJurosAoMes": 0.93,
    "TaxaJurosAoAno": 11.78,
@@ -325,7 +345,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 12,
+   "Posicao": 13,
    "InstituicaoFinanceira": "BCO SANTANDER (BRASIL) S.A.",
    "TaxaJurosAoMes": 0.94,
    "TaxaJurosAoAno": 11.86,
@@ -335,7 +355,7 @@ window.TAXAS_SNAPSHOT = {
   {
    "Mes": "Out-2026",
    "Modalidade": "Financiamento imobiliário com taxas reguladas - Pós-fixado referenciado em TR",
-   "Posicao": 13,
+   "Posicao": 14,
    "InstituicaoFinanceira": "ITAÚ UNIBANCO S.A.",
    "TaxaJurosAoMes": 0.94,
    "TaxaJurosAoAno": 11.86,
