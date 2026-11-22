@@ -37,12 +37,13 @@ jobs:
         run: node validar-site.mjs
       - name: Publicar se houve mudança
         run: |
-          if [ -z "$(git status --porcelain)" ]; then
+          git add -A
+          # compara o que realmente seria gravado (ignora diferença só de quebra de linha)
+          if git diff --cached --quiet; then
             echo "Nada mudou: mesmas taxas e mesmo mês." >> "$GITHUB_STEP_SUMMARY"
           else
             git config user.name "atualizador-de-taxas"
             git config user.email "actions@users.noreply.github.com"
-            git add -A
             git commit -m "Atualização automática: taxas do Banco Central e mês vigente"
             git push
             echo "Site atualizado e publicado." >> "$GITHUB_STEP_SUMMARY"

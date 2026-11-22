@@ -222,7 +222,7 @@ ${g.lista.map((t, i) => `<tr><td>${i + 1}º</td><td><a href="${pagina[t.id]}">${
     </table></div>
     <p><a href="comparar.html?l=${g.linha}&i=${g.idx}">Simular nessa modalidade${SETA}</a></p>`).join('\n');
   // planilha com os mesmos números, para quem quiser citar ou reaproveitar
-  const csv = ['modalidade;posicao;instituicao;cnpj_raiz;taxa_ao_ano;mes_dos_contratos', ...grupos.flatMap((g) => g.lista.map((t, i) => [NOME_MOD[g.k], i + 1, nomeDe(t.id), t.id, String(t.aa).replace('.', ','), snap.mes].join(';')))].join('\r\n') + '\r\n';
+  const csv = ['modalidade;posicao;instituicao;cnpj_raiz;taxa_ao_ano;mes_dos_contratos', ...grupos.flatMap((g) => g.lista.map((t, i) => [NOME_MOD[g.k], i + 1, nomeDe(t.id), t.id, String(t.aa).replace('.', ','), snap.mes].join(';')))].join('\n') + '\n'; // quebra de linha simples, como o git guarda: evita uma "mudança" fantasma na rotina
   gravar('dados/ranking-taxas.csv', '﻿' + csv);
   gravar(RANKING, cabeca('', `Ranking das taxas de financiamento imobiliário: ${rotuloAtual}`,
     `Ranking de ${rotuloAtual} com as menores taxas de juros do financiamento imobiliário por banco, a variação no mês e a parcela de exemplo. Dados do Banco Central.`) + `
