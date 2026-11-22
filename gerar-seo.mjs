@@ -60,7 +60,7 @@ const ranking = (linha, idx) => taxas.filter((t) => t.linha === linha && t.idx =
 const logo = (id, r, classe = '') => W.LOGOS_BANCOS[id]
   ? `<span class="logo-banco ${classe}"><img src="${r}assets/bancos/${W.LOGOS_BANCOS[id]}" alt="${esc(nomeDe(id))}"></span>` : '';
 
-const cabeca = (r, titulo, descricao) => `<!doctype html>
+const cabeca = (r, titulo, descricao, tema = '') => `<!doctype html>
 <html lang="pt-BR"${r ? ` data-raiz="${r}"` : ''}>
 <head>
 <meta charset="utf-8">
@@ -70,7 +70,7 @@ const cabeca = (r, titulo, descricao) => `<!doctype html>
 <link rel="icon" href="${r}assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${r}css/site.css">
 </head>
-<body data-pagina="bancos">
+<body data-pagina="bancos"${tema ? ` data-tema="${tema}"` : ''}>
 <header id="cabecalho"></header>
 <main>`;
 const pe = (r, script = 'pagina') => `</main>
@@ -115,7 +115,7 @@ for (const id of ids) {
     b.coop ? `<p>O ${esc(nome)} é um sistema de cooperativas de crédito: para contratar é preciso associar-se a uma cooperativa.</p>` : ''
   ].join('');
 
-  gravar(pagina[id], genero(id, cabeca('../', titulo, descricao) + `
+  gravar(pagina[id], genero(id, cabeca('../', titulo, descricao, 'banco') + `
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="../index.html">Início</a> › <a href="../bancos.html">Taxas por banco</a> › ${esc(nome)}</p>

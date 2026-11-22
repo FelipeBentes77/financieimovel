@@ -536,3 +536,19 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
 .sim-resultado .btn { margin-top: 8px; justify-content: center; }
 .sim-resultado .aviso { font-size: .88rem; margin: 0 0 8px; }
 @media (max-width: 760px) { .sim-banco { grid-template-columns: 1fr; } }
+
+/* página de vendas: por dentro do ebook e planilhas */
+.por-dentro { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.por-dentro figure, .planilhas figure { margin: 0; }
+.espiar { display: block; border: 1px solid var(--linha); border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 10px 28px rgba(16, 26, 74, .12); transition: transform .2s ease, box-shadow .2s ease; }
+.espiar:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(16, 26, 74, .18); }
+.espiar img { width: 100%; height: auto; display: block; }
+.por-dentro figcaption { font-size: .9rem; color: var(--tinta-2); margin-top: 10px; text-align: center; }
+.planilhas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: start; }
+.planilhas .espiar { aspect-ratio: 4 / 3; }
+.planilhas .espiar img { height: 100%; object-fit: cover; object-position: top left; }
+.planilhas figcaption { margin-top: 12px; font-size: .95rem; color: var(--tinta-2); line-height: 1.45; }
+.planilhas figcaption b { display: block; color: var(--tinta); font-size: 1.05rem; margin-bottom: 2px; }
+.promo-preco { margin: 8px 0 0; font-size: .95rem; }
+.promo-preco b { color: var(--amarelo); font-size: 1.1rem; }
+@media (max-width: 900px) { .por-dentro { grid-template-columns: 1fr 1fr; } .planilhas { grid-template-columns: 1fr; } }

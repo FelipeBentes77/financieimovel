@@ -67,7 +67,7 @@ ${faq.map(([q, a]) => `      <details><summary>${esc(q)}</summary><p>${esc(a)}</
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../css/site.css">
 </head>
-<body>
+<body data-tema="${{ 'Crédito': 'credito', 'Planejamento': 'planejamento', 'Quem já financia': 'amortizar', 'Reforma': 'reforma' }[p.categoria] || ''}">
 <header id="cabecalho"></header>
 <main>
 <section class="topo-pag">

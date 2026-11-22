@@ -327,14 +327,27 @@ window.CC = (function () {
 
   /* ---------- chamada para o ebook ---------- */
   // Uso no HTML: <div data-promo="ebook"></div> (faixa larga) ou data-promo="ebook-lateral"
+  // O texto muda conforme o assunto da página: <div data-promo="ebook" data-tema="reforma"></div>
+  // (sem data-tema, vale o data-tema do <body>; sem nenhum, o texto geral)
+  var TEMAS_PROMO = {
+    comparar: ['Achou o banco mais barato? Agora negocie', 'O guia traz o roteiro de negociação com três bancos e ensina a ler a proposta linha por linha. A planilha coloca as ofertas lado a lado.'],
+    renda: ['Quer chegar a um imóvel melhor?', 'Veja como aumentar a entrada, usar o FGTS e arrumar o cadastro antes de pedir o crédito. Inclui a planilha de planejamento da entrada.'],
+    banco: ['Vai pedir proposta ao banco?', 'Leve o roteiro de perguntas ao banco e saiba conferir o Custo Efetivo Total. O guia mostra como negociar com três instituições ao mesmo tempo.'],
+    credito: ['Do primeiro cálculo à assinatura', 'SAC ou Price, TR ou IPCA, como ler a proposta e como negociar: a parte de crédito do guia cobre tudo, com planilha para comparar os bancos.'],
+    planejamento: ['Planeje a compra sem sustos', 'Quanto imóvel cabe na renda, quanto juntar de entrada e os custos que ninguém põe na conta. Inclui a planilha de planejamento da entrada.'],
+    amortizar: ['Pague menos ao longo dos anos', 'A última parte do guia mostra quando amortizar, como usar o FGTS de novo e quando a portabilidade compensa.'],
+    reforma: ['Vai reformar?', 'Escopo, orçamentos que dá para comparar, cronograma e contrato de mão de obra. Inclui a planilha de orçamento e cronograma de reforma.']
+  };
   function montarPromo() {
-    var p = CONFIG.produto;
+    var p = CONFIG.produto, temaPagina = document.body.getAttribute('data-tema') || '';
     [].forEach.call(document.querySelectorAll('[data-promo]'), function (el) {
       var lateral = el.getAttribute('data-promo') === 'ebook-lateral';
+      var t = TEMAS_PROMO[el.getAttribute('data-tema') || temaPagina];
       el.className = 'promo' + (lateral ? ' lateral' : '');
-      el.innerHTML = '<div><span class="etiqueta">Ebook' + (p.checkout ? '' : ' · em breve') + '</span><h3>' + f.esc(p.nome) + '</h3><p>' + f.esc(p.subtitulo) +
-        '. Planejamento, crédito, compra e reforma em um passo a passo.</p></div>' +
-        '<a class="btn btn-acao" href="' + R + 'ebook.html">Conhecer o ebook' + SETA + '</a>';
+      el.innerHTML = '<div><span class="etiqueta">Ebook ' + f.esc(p.nome) + (p.checkout ? '' : ' · em breve') + '</span><h3>' + f.esc(t ? t[0] : p.nome) + '</h3><p>' +
+        f.esc(t ? t[1] : p.subtitulo + '. Planejamento, crédito, compra e reforma em um passo a passo.') + '</p>' +
+        (p.preco && p.checkout && !lateral ? '<p class="promo-preco">' + (p.precoDe ? 'De <s>' + f.esc(p.precoDe) + '</s> por ' : '') + '<b>' + f.esc(p.preco) + '</b> · 23 capítulos e 3 planilhas</p>' : '') + '</div>' +
+        '<a class="btn btn-acao" href="' + R + 'ebook.html">Ver o guia completo' + SETA + '</a>';
     });
   }
 
