@@ -408,7 +408,7 @@ for (const p of paginas) {
   const bloco = `<!--seo:inicio-->
 <meta http-equiv="Content-Security-Policy" content="${CSP}">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="robots" content="${oculta ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}">
+<meta name="robots" content="${oculta || p === 'afiliados.html' ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1'}">
 <meta name="theme-color" content="#101a4a">
 ${precarga}
 ${url ? `<link rel="canonical" href="${url}">\n<meta property="og:url" content="${url}">\n` : ''}<meta property="og:site_name" content="Financie Imóvel">
@@ -427,7 +427,7 @@ const hoje = hojeISO;
 gravar('robots.txt', `User-agent: *\nAllow: /\n${dominio ? `\nSitemap: ${dominio}/sitemap.xml\n` : ''}`);
 if (dominio) {
   gravar('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    paginas.filter((p) => p !== '404.html').map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
+    paginas.filter((p) => p !== '404.html' && p !== 'afiliados.html').map((p) => `  <url><loc>${dominio}/${p === 'index.html' ? '' : p}</loc><lastmod>${hoje}</lastmod></url>`).join('\n') + '\n</urlset>\n');
 }
 console.log(`OK: ${ids.length} páginas de banco, índice, lista do blog e metadados em ${paginas.length} páginas.` +
   (dominio ? ' sitemap.xml gerado.' : ' ATENÇÃO: preencha "dominio" em site.config.json para gerar sitemap.xml e endereços canônicos.'));
