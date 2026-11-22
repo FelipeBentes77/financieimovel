@@ -73,14 +73,14 @@ const cabeca = (r, titulo, descricao) => `<!doctype html>
 <body data-pagina="bancos">
 <header id="cabecalho"></header>
 <main>`;
-const pe = (r) => `</main>
+const pe = (r, script = 'pagina') => `</main>
 <footer id="rodape"></footer>
 <script src="${r}dados/taxas.js"></script>
 <script src="${r}dados/logos-bancos.js"></script>
 <script src="${r}dados/links-bancos.js"></script>
 <script src="${r}dados/paginas-bancos.js"></script>
 <script src="${r}js/comum.js"></script>
-<script src="${r}js/pagina.js"></script>
+<script src="${r}js/${script}.js"></script>
 </body>
 </html>
 `;
@@ -102,13 +102,14 @@ for (const id of ids) {
   const principal = minhas.find((t) => t.linha === 'reg' && t.idx === 'tr') || minhas.find((t) => t.idx === 'tr') || minhas[0];
   const rk = ranking(principal.linha, principal.idx), pos = rk.findIndex((t) => t.id === id) + 1;
   const link = W.LINKS_BANCOS[id];
+  const exemplo = CC.simular({ ...EX, indexAA: principal.idx === 'tr' ? P.tr : principal.idx === 'ipca' ? P.ipca : 0 }, principal.aa);
   const linhasTab = minhas.sort((a, b2) => a.linha.localeCompare(b2.linha) * -1 || a.aa - b2.aa).map((t) => {
     const r = ranking(t.linha, t.idx), p = r.findIndex((x) => x.id === id) + 1;
     return `<tr><td>${LINHA[t.linha]}</td><td>${IDX[t.idx]}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${p}º de ${r.length}</td><td class="n">${f.brl(parcela(t))}</td></tr>`;
   }).join('\n');
   const comparacao = rk.map((t, i) => `<tr${t.id === id ? ' style="background:var(--lavanda)"' : ''}><td>${i + 1}º</td><td>${t.id === id ? `<b>${esc(nome)}</b>` : `<a href="../${pagina[t.id]}">${esc(nomeDe(t.id))}</a>`}</td><td class="n"><b>${f.pct(t.aa, 2)}</b></td><td class="n">${f.brl(parcela(t))}</td></tr>`).join('\n');
-  const titulo = `Financiamento imobiliário ${nome}: taxas de ${rotuloAtual}`;
-  const descricao = `Financiamento imobiliário ${nome}: taxa média de ${f.pct(principal.aa, 2)} ao ano, atualizada em ${rotuloAtual}. Veja a parcela, a posição no ranking e compare com outros bancos.`;
+  const titulo = `Simulador de financiamento ${nome}: taxas de ${rotuloAtual}`;
+  const descricao = `Simule o financiamento imobiliário ${nome} com a taxa média de ${f.pct(principal.aa, 2)} ao ano, atualizada em ${rotuloAtual}. Veja parcela, juros totais e renda necessária.`;
   const avisos = [
     b.regiao ? `<p>O ${esc(nome)} tem atuação concentrada no estado: ${esc(b.regiao)}. Confirme se há atendimento na sua cidade.</p>` : '',
     b.coop ? `<p>O ${esc(nome)} é um sistema de cooperativas de crédito: para contratar é preciso associar-se a uma cooperativa.</p>` : ''
@@ -118,13 +119,48 @@ for (const id of ids) {
 <section class="topo-pag">
   <div class="container">
     <p class="migalhas"><a href="../index.html">Início</a> › <a href="../bancos.html">Taxas por banco</a> › ${esc(nome)}</p>
-    <h1>Financiamento imobiliário ${esc(nome)}: taxas de ${rotuloAtual}</h1>
-    <p>Taxa média de juros que o ${esc(nome)} cobra nos contratos de financiamento, segundo a divulgação mais recente do Banco Central.</p>
+    <h1>Simulador de financiamento imobiliário ${esc(nome)}</h1>
+    <p>Simulação independente com as taxas de ${rotuloAtual}: a média que o ${esc(nome)} cobra nos contratos, segundo a divulgação mais recente do Banco Central.</p>
   </div>
 </section>
 <div class="container post">
   <article class="artigo">
     <p class="lide">Na divulgação mais recente do Banco Central, com os contratos de ${rotuloMes}, o ${esc(nome)} cobrou em média <b>${f.pct(principal.aa, 2)} ao ano</b> nos financiamentos imobiliários da linha ${LINHA[principal.linha]} com correção por ${IDX[principal.idx]}. Com isso ficou em <b>${pos}º lugar entre ${rk.length} instituições</b> nessa modalidade.</p>
+
+    <div class="sim-banco" data-banco="${id}">
+      <form id="simForm" autocomplete="off" novalidate>
+        <h2 class="sim-titulo">Simule no ${esc(nome)}</h2>
+        <label class="campo"><span>Valor do imóvel</span><div class="moeda"><i>R$</i><input id="simImovel" inputmode="numeric" value="500.000"></div></label>
+        <label class="campo"><span>Entrada <em id="simEntradaPct">20% do imóvel</em></span><div class="moeda"><i>R$</i><input id="simEntrada" inputmode="numeric" value="100.000"></div></label>
+        <label class="campo"><span>Prazo: <b id="simPrazoTxt">30 anos</b></span><input type="range" id="simPrazo" min="5" max="35" step="1" value="30"></label>
+        <fieldset class="campo"><legend>Sistema de amortização</legend>
+          <div class="seg">
+            <label><input type="radio" name="sistema" value="sac" checked><span>SAC<small>parcela cai</small></span></label>
+            <label><input type="radio" name="sistema" value="price"><span>Price<small>parcela fixa</small></span></label>
+          </div>
+        </fieldset>
+        <label class="campo"><span>Linha e correção</span>
+          <select id="simModalidade">
+${minhas.map((t) => `            <option value="${t.linha}|${t.idx}"${t === principal ? ' selected' : ''}>${t.linha === 'reg' ? 'SFH' : 'SFI'} · ${t.idx === 'tr' ? 'TR' : t.idx === 'ipca' ? 'IPCA' : 'taxa fixa'} · ${f.pct(t.aa, 2)} a.a.</option>`).join('\n')}
+          </select>
+        </label>
+      </form>
+      <div class="sim-resultado">
+        <div class="rot">Primeira parcela estimada</div>
+        <div class="valor" id="simParcela">${f.brl(exemplo.primeira)}</div>
+        <dl>
+          <div><dt>Valor financiado</dt><dd id="simFin">${f.brl(EX.financiado)}</dd></div>
+          <div><dt>Última parcela</dt><dd id="simUltima">${f.brl(exemplo.ultima)}</dd></div>
+          <div><dt>Total de juros</dt><dd id="simJuros">${f.brl(exemplo.juros)}</dd></div>
+          <div><dt>Custo efetivo (CET)</dt><dd id="simCet">${f.pct(exemplo.cet, 2)} a.a.</dd></div>
+          <div><dt>Renda familiar mínima</dt><dd id="simRenda">${f.brl(exemplo.maior / 0.3)}</dd></div>
+        </dl>
+        <p class="aviso" id="simAviso" hidden>A maioria dos bancos pede pelo menos 20% de entrada.</p>
+        <a class="btn btn-acao btn-bloco" id="simComparar" href="../comparar.html?l=${principal.linha}&i=${principal.idx}">Comparar com outros bancos${SETA}</a>
+        ${link ? `<a class="btn btn-claro btn-bloco" href="${esc(link)}" target="_blank" rel="noopener sponsored" data-banco-site="${esc(nome)}">Simulador oficial do ${esc(nome)}</a>` : ''}
+      </div>
+    </div>
+    <p class="nota">Esta é uma simulação independente do Financie Imóvel, feita com a taxa média do ${esc(nome)} informada ao Banco Central e com seguros estimados. Não é o simulador oficial do banco: a taxa oferecida a você depende da análise de crédito.</p>
 
     <h2>Taxas do ${esc(nome)} por modalidade</h2>
     <table>
@@ -163,7 +199,7 @@ ${comparacao}
     <div data-promo="ebook-lateral"></div>
   </aside>
 </div>
-` + pe('../')));
+` + pe('../', 'banco')));
 }
 
 /* ---------- índice de bancos ---------- */
@@ -347,7 +383,8 @@ for (const p of paginas) {
       if (faqPost.length) dadosEstruturados.push(ld({ '@type': 'FAQPage', mainEntity: faqPost.map((m) => ({ '@type': 'Question', name: texto(m[1]), acceptedAnswer: { '@type': 'Answer', text: texto(m[2]) } })) }));
       dadosEstruturados.push(migalhas([['Início', ''], ['Blog', 'blog.html'], [x.titulo, p]]));
     } else if (p.startsWith('bancos/')) {
-      dadosEstruturados.push(ld({ '@type': 'WebPage', name: h1, description: desc, url, dateModified: hojeISO, inLanguage: 'pt-BR', isPartOf: { '@type': 'WebSite', name: 'Financie Imóvel', url: `${dominio}/` } }));
+      dadosEstruturados.push(ld({ '@type': 'WebApplication', name: h1, description: desc, url, dateModified: hojeISO, inLanguage: 'pt-BR', applicationCategory: 'FinanceApplication', operatingSystem: 'Web',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' }, isPartOf: { '@type': 'WebSite', name: 'Financie Imóvel', url: `${dominio}/` } }));
       dadosEstruturados.push(migalhas([['Início', ''], ['Taxas por banco', 'bancos.html'], [h1, p]]));
     } else {
       if (p === 'ebook.html') {

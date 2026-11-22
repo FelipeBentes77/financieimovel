@@ -215,9 +215,43 @@ window.CC = (function () {
   function lerEscolha() { try { var v = localStorage.getItem('cc_cookies'); return v === 'sim' || v === 'nao' ? v : ''; } catch (e) { return ''; } }
   function gravarEscolha(v) { try { localStorage.setItem('cc_cookies', v); } catch (e) { /* navegação privada */ } }
   var analyticsLigado = false;
+  // Visitas da própria equipe não entram na estatística: abra o site uma vez com ?interno=1 em cada aparelho
+  // (para voltar a ser contado, ?interno=0). Endereços de teste (localhost) nunca são medidos.
+  function visitaInterna() {
+    try {
+      var m = /[?&]interno=([01])\b/.exec(location.search);
+      if (m) { if (m[1] === '1') localStorage.setItem('cc_interno', '1'); else localStorage.removeItem('cc_interno'); }
+      if (localStorage.getItem('cc_interno') === '1') return true;
+    } catch (e) { /* navegação privada */ }
+    return /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || /\.(localhost|test)$/.test(location.hostname);
+  }
+  // registra um evento no Analytics, se o visitante aceitou a medição
+  function evento(nome, dados) { if (analyticsLigado && typeof window.gtag === 'function') window.gtag('event', nome, dados || {}); }
+  var cliquesLigados = false;
+  function medirCliques() {
+    if (cliquesLigados) return;
+    cliquesLigados = true;
+    var pagina = location.pathname.split('/').pop() || 'index.html';
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (/^https:\/\/pay\.hotmart\.com\//.test(href)) evento('clique_compra_ebook', { pagina: pagina });
+      else if (/\bsponsored\b/.test(a.getAttribute('rel') || '')) evento('clique_site_banco', { banco: a.getAttribute('data-banco-site') || a.hostname, pagina: pagina });
+      else if (/ebook\.html/.test(href) && a.closest('.anuncio, .promo')) evento('clique_chamada_ebook', { pagina: pagina });
+      else if (/dados\/ranking-taxas\.csv/.test(href)) evento('baixou_ranking', { pagina: pagina });
+    });
+    // primeiro uso de um simulador em cada página
+    var usou = false;
+    document.addEventListener('input', function (e) {
+      if (usou || !(e.target.closest && e.target.closest('form'))) return;
+      usou = true;
+      evento('usou_simulador', { pagina: pagina });
+    });
+  }
   function ligarAnalytics() {
     var id = idAnalytics();
-    if (!id || analyticsLigado) return;
+    if (!id || analyticsLigado || visitaInterna()) return;
     analyticsLigado = true;
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer.push(arguments); };
@@ -228,6 +262,7 @@ window.CC = (function () {
     sc.async = true;
     sc.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
     document.head.appendChild(sc);
+    medirCliques();
   }
   function mostrarAviso() {
     if (document.getElementById('avisoCookies')) return;
@@ -249,7 +284,7 @@ window.CC = (function () {
     document.body.appendChild(el);
   }
   function montarConsentimento() {
-    if (!idAnalytics()) return;
+    if (!idAnalytics() || visitaInterna()) return;
     var escolha = lerEscolha();
     if (escolha === 'sim') ligarAnalytics();
     else if (!escolha) mostrarAviso();

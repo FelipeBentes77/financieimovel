@@ -520,3 +520,19 @@ dialog::backdrop { background: rgba(10, 17, 54, .6); }
 .var.subiu { color: #c0392b; }
 .var.igual, .var.novo { color: var(--tinta-2); font-weight: 600; }
 .topo-pag .post-meta a { color: #fff; }
+
+/* simulador dentro da página de banco */
+.sim-banco { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0; border: 1px solid var(--linha); border-radius: 12px; overflow: hidden; margin: 26px 0 12px; background: #fff; font-size: 1rem; line-height: 1.45; }
+.sim-banco form { padding: 22px 22px 8px; }
+.sim-banco .sim-titulo { font-size: 1.2rem; margin: 0 0 16px; }
+.sim-banco select { width: 100%; font: inherit; font-weight: 700; padding: 11px 12px; border: 1.5px solid #b9bfdd; border-radius: var(--raio); background: #fff; color: inherit; }
+.sim-resultado { background: var(--marinho); color: #fff; padding: 24px 22px; display: flex; flex-direction: column; }
+.sim-resultado .rot { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #c5cbf0; }
+.sim-resultado .valor { font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; line-height: 1.1; margin: 4px 0 14px; color: var(--amarelo); font-variant-numeric: tabular-nums; }
+.sim-resultado dl { margin: 0 0 16px; }
+.sim-resultado dl div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, .16); font-size: .95rem; }
+.sim-resultado dt { color: #c5cbf0; }
+.sim-resultado dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sim-resultado .btn { margin-top: 8px; justify-content: center; }
+.sim-resultado .aviso { font-size: .88rem; margin: 0 0 8px; }
+@media (max-width: 760px) { .sim-banco { grid-template-columns: 1fr; } }
